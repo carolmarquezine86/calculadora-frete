@@ -37,7 +37,7 @@ st.markdown(f"""
     </head>
 """, unsafe_allow_html=True)
 
-# --- CSS COM ALINHAMENTO PERFEITO DA LOGO E BOTÕES AMARELOS ---
+# --- CSS COM ALINHAMENTO PERFEITO DA LOGO E OCULTAÇÃO DE ELEMENTOS DO STREAMLIT/GITHUB ---
 st.markdown("""
     <style>
     /* Fundo geral da aplicação */
@@ -180,9 +180,13 @@ st.markdown("""
         border-top: 1px solid #E5E7EB;
     }
 
-    header { visibility: hidden; }
-    #MainMenu { visibility: hidden; }
-    footer { visibility: hidden; }
+    /* OCULTAR COMPLETAMENTE ELEMENTOS DO STREAMLIT E LOGOS DO GITHUB FLUTUANTES */
+    header { visibility: hidden !important; display: none !important; }
+    #MainMenu { visibility: hidden !important; display: none !important; }
+    footer { visibility: hidden !important; display: none !important; }
+    .stDeployButton { display: none !important; }
+    [data-testid="stStatusWidget"] { visibility: hidden !important; display: none !important; }
+    .viewerBadge_container__1QSob { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
 
