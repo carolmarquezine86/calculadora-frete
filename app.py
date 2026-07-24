@@ -237,24 +237,21 @@ def obter_distancia(cep_destino, numero_casa):
         
         logradouro = resp_cep.get('logradouro', '')
         bairro = resp_cep.get('bairro', '')
-        cidade = resp_cep.get('localidade', 'São Paulo')
-        uf = resp_cep.get('uf', 'SP')
+        cidade = "São Paulo"
+        uf = "SP"
         
         num_str = f", {numero_casa}" if numero_casa else ""
         
-        # Tentativa 1: Busca completa com logradouro, número, bairro e cidade
         query1 = f"{logradouro}{num_str}, {bairro}, {cidade}, {uf}, Brasil"
-        geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={query1}", headers={'User-Agent': 'VastoApp'}).json()
+        geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={query1}&city={cidade}&state={uf}&country=Brazil", headers={'User-Agent': 'VastoApp'}).json()
         
-        # Tentativa 2: Se não achar com o bairro, busca apenas logradouro, número e cidade
         if not geo:
             query2 = f"{logradouro}{num_str}, {cidade}, {uf}, Brasil"
-            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={query2}", headers={'User-Agent': 'VastoApp'}).json()
+            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={query2}&city={cidade}&state={uf}&country=Brazil", headers={'User-Agent': 'VastoApp'}).json()
 
-        # Tentativa 3: Se ainda não achar, usa o CEP diretamente com a cidade para garantir precisão na região
         if not geo:
             query3 = f"CEP {cep}, {cidade}, {uf}, Brasil"
-            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={query3}", headers={'User-Agent': 'VastoApp'}).json()
+            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={query3}&city={cidade}&state={uf}&country=Brazil", headers={'User-Agent': 'VastoApp'}).json()
 
         if not geo: return None, "Não foi possível localizar este endereço no mapa. Verifique o CEP."
 
