@@ -3,45 +3,48 @@ import math
 import requests
 
 # --- CONFIGURAÇÃO DA PÁGINA ---
-st.set_page_config(page_title="Frete Vasto", layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Frete Vasto", page_icon="🚚", layout="centered")
 
-# --- CSS MÁGICO (Hack para transformar Streamlit em App Nativo) ---
+# --- CSS AJUSTADO E 100% LEGÍVEL ---
 st.markdown("""
     <style>
-    /* Fundo do App e margens */
-    .stApp { background-color: #F4F5F7; font-family: 'Helvetica Neue', sans-serif; }
-    
-    /* Ajuste para tela de celular */
-    .block-container { 
-        padding-top: 0rem !important; 
-        padding-bottom: 2rem !important; 
-        max-width: 480px !important; 
+    /* Fundo suave da página */
+    .stApp { 
+        background-color: #F8F9FA; 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
     
-    /* HEADER AMARELO VASTO */
+    /* Container centralizado e responsivo */
+    .block-container { 
+        padding-top: 1rem !important; 
+        padding-bottom: 2rem !important; 
+        max-width: 520px !important; 
+    }
+    
+    /* HEADER VASTO */
     .vasto-header {
         background-color: #F2C900;
-        padding: 40px 20px 20px 20px;
-        margin: 0 -2rem 25px -2rem; 
+        padding: 20px 25px;
+        border-radius: 12px;
+        margin-bottom: 25px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-radius: 0 0 15px 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     }
     .logo-box {
         background-color: #111;
         color: #F2C900;
         font-weight: 900;
-        font-size: 24px;
-        padding: 8px 14px;
+        font-size: 22px;
+        padding: 6px 12px;
         border-radius: 8px;
         margin-right: 12px;
     }
-    .text-box h1 { margin: 0; font-size: 18px; font-weight: 900; color: #111; letter-spacing: 1px; line-height: 1.1;}
-    .text-box p { margin: 0; font-size: 10px; font-weight: 700; color: #111; letter-spacing: 3px; }
+    .text-box h1 { margin: 0; font-size: 18px; font-weight: 900; color: #111; letter-spacing: 1px; line-height: 1.1; }
+    .text-box p { margin: 0; font-size: 10px; font-weight: 700; color: #111; letter-spacing: 2px; }
     .badge {
-        background-color: rgba(0,0,0,0.1);
+        background-color: rgba(0,0,0,0.08);
         padding: 6px 12px;
         border-radius: 20px;
         font-size: 12px;
@@ -49,73 +52,79 @@ st.markdown("""
         color: #111;
     }
     
-    /* INPUTS ESTILIZADOS */
+    /* RÓTULOS DOS CAMPOS COM COR BEM ESCURA */
+    label, div[data-testid="stMarkdownContainer"] p {
+        color: #111111 !important;
+        font-weight: 700 !important;
+    }
+
+    /* INPUTS LEGÍVEIS COM BORDA */
     .stTextInput input, .stNumberInput input {
-        background-color: #FFF !important;
-        border: 1px solid #E0E0E0 !important;
-        border-radius: 12px !important;
-        padding: 12px 15px !important;
-        font-size: 16px !important;
+        background-color: #FFFFFF !important;
+        color: #111111 !important;
+        border: 1px solid #CCCCCC !important;
+        border-radius: 8px !important;
+        padding: 10px 14px !important;
+        font-weight: 600 !important;
     }
 
-    /* BOTÕES DE ESCADA (Formato Pílula) */
-    div[role="radiogroup"] { flex-direction: row; gap: 8px; flex-wrap: wrap; }
+    /* BOTÕES DA ESCADA (RADIO) */
+    div[role="radiogroup"] {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
     div[role="radiogroup"] > label {
-        background-color: #FFF;
-        border: 1px solid #E0E0E0;
-        padding: 10px 18px;
-        border-radius: 30px;
-        cursor: pointer;
+        background-color: #FFFFFF !important;
+        border: 1px solid #D1D5DB !important;
+        padding: 8px 16px !important;
+        border-radius: 20px !important;
+        cursor: pointer !important;
+        color: #111111 !important;
+        font-weight: 600 !important;
     }
-    /* Estilo do botão selecionado */
-    div[role="radiogroup"] > label[aria-checked="true"] {
-        background-color: #111 !important;
-        border-color: #111 !important;
-    }
-    div[role="radiogroup"] > label[aria-checked="true"] p {
-        color: #F2C900 !important;
-        font-weight: bold;
-    }
-
-    /* CHECKBOX MANUAL */
-    .stCheckbox label p { font-weight: 800 !important; color: #111 !important; font-size: 15px !important;}
-    .subtext { color: #888; font-size: 13px; margin-top: -10px; margin-left: 28px; margin-bottom: 20px; }
 
     /* BOTÕES INFERIORES */
     .stButton > button {
-        border-radius: 12px !important;
-        padding: 15px !important;
-        font-weight: bold !important;
-        font-size: 16px !important;
+        border-radius: 10px !important;
+        padding: 12px !important;
+        font-weight: 800 !important;
+        font-size: 15px !important;
         border: none !important;
         width: 100% !important;
-        margin-top: 20px;
+        transition: all 0.2s ease !important;
     }
-    /* Botão Calcular */
+    
+    /* Botão Calcular (Amarelo Vasto) */
     div[data-testid="column"]:nth-child(2) .stButton > button {
-        background-color: #9C7A14 !important; 
-        color: #111 !important;
+        background-color: #F2C900 !important; 
+        color: #111111 !important;
     }
-    /* Botão Limpar */
+    div[data-testid="column"]:nth-child(2) .stButton > button:hover {
+        background-color: #D6B200 !important;
+    }
+
+    /* Botão Limpar (Preto) */
     div[data-testid="column"]:nth-child(1) .stButton > button {
-        background-color: #111 !important;
-        color: #FFF !important;
+        background-color: #111111 !important;
+        color: #FFFFFF !important;
     }
     
     /* RODAPÉ CAROL MARQUEZINE */
     .footer-credits {
         text-align: center;
-        margin-top: 40px;
-        padding: 15px 0 10px 0;
-        color: #888888;
+        margin-top: 35px;
+        padding-top: 15px;
+        color: #777777;
         font-size: 12px;
         font-weight: 600;
-        letter-spacing: 0.5px;
-        border-top: 1px solid #E0E0E0;
+        border-top: 1px solid #E5E7EB;
     }
-    
-    /* Ocultar barra nativa do Streamlit */
-    header {visibility: hidden;}
+
+    /* Ocultar elementos desnecessários da tela */
+    header { visibility: hidden; }
+    #MainMenu { visibility: hidden; }
+    footer { visibility: hidden; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -173,16 +182,14 @@ def obter_distancia(cep_destino):
     except:
         return None, "Erro ao processar rota."
 
-# --- FORMULÁRIO (INTERFACE) ---
-peso = st.number_input("Peso (kg)", min_value=1.0, value=600.0, step=10.0, help="Ex: 600 kg")
+# --- FORMULÁRIO DE ENTRADA ---
+peso = st.number_input("Peso total da carga (kg)", min_value=1.0, value=600.0, step=10.0)
 
-st.markdown("<p style='font-size:14px; font-weight:700; color:#333; margin: 15px 0 -15px 0;'>Lances de escada</p>", unsafe_allow_html=True)
-escada = st.radio("Escada", ["Sem escada", "1 lance", "2 lances", "3 ou mais lances"], label_visibility="collapsed")
+escada = st.radio("Lances de escada", ["Sem escada", "1 lance", "2 lances", "3 ou mais lances"])
 
-st.markdown("<hr style='margin: 25px 0 15px 0; border: 0.5px solid #EAEAEA;'>", unsafe_allow_html=True)
+st.markdown("<hr style='margin: 20px 0; border: none; border-top: 1px solid #E5E7EB;'>", unsafe_allow_html=True)
 
 manual = st.checkbox("Informar a distância manualmente")
-st.markdown("<div class='subtext'>Use se a busca automática não localizar a rota.</div>", unsafe_allow_html=True)
 
 distancia_manual = 0.0
 cep = ""
@@ -192,7 +199,8 @@ if manual:
 else:
     cep = st.text_input("CEP de Destino", placeholder="Ex: 01001-000")
 
-# --- BOTÕES (RODAPÉ) ---
+# --- BOTÕES ---
+st.write("")
 col1, col2 = st.columns([1, 1.5])
 with col1:
     btn_limpar = st.button("↻ Limpar")
@@ -202,29 +210,29 @@ with col2:
 if btn_limpar:
     st.rerun()
 
-# --- RESULTADO ---
+# --- EXIBIÇÃO DE RESULTADO ---
 if btn_calcular:
     dist = distancia_manual
     if cep and not manual:
-        with st.spinner("Calculando rota..."):
+        with st.spinner("Calculando rota por CEP..."):
             calc_dist, info = obter_distancia(cep)
             if calc_dist:
                 dist = calc_dist
-                st.success(f"📍 {info} ({dist} km)")
+                st.success(f"📍 **Endereço:** {info} ({dist} km)")
             else:
                 st.error(info)
 
     if dist > 0 or (manual and dist == 0):
         res = calcular_frete(peso, escada, dist)
         st.markdown(f"""
-            <div style="background-color: #111; border-left: 6px solid #F2C900; padding: 20px; border-radius: 8px; margin-top: 15px;">
-                <span style="color: #888; font-size: 12px; font-weight: 700; text-transform: uppercase;">Valor do Frete</span>
-                <h1 style="color: #F2C900; margin: 5px 0; font-size: 34px;">R$ {res['total']:.2f}</h1>
-                <p style="color: #FFF; font-size: 13px; margin: 0;">Modalidade: {res['tipo']} | Faixa: {res['faixa']}</p>
+            <div style="background-color: #111111; border-left: 6px solid #F2C900; padding: 20px; border-radius: 10px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <span style="color: #9CA3AF; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Valor Estimado do Frete</span>
+                <h1 style="color: #F2C900; margin: 4px 0 10px 0; font-size: 34px; font-weight: 800;">R$ {res['total']:.2f}</h1>
+                <p style="color: #E5E7EB; font-size: 13px; margin: 0;">Modalidade: <strong>{res['tipo']}</strong> | Faixa: <strong>{res['faixa']}</strong></p>
             </div>
         """, unsafe_allow_html=True)
 
-# --- RODAPÉ COM A ASSINATURA ---
+# --- RODAPÉ COM ASSINATURA ---
 st.markdown("""
     <div class="footer-credits">
         Desenvolvido por Carol Marquezine
