@@ -22,7 +22,7 @@ logo_b64, logo_ext = get_image_base64("logo.png") or get_image_base64("logo.jpg"
 icone_file = "icone.png" if os.path.exists("icone.png") else "logo.png"
 icon_b64, icon_ext = get_image_base64(icone_file)
 
-# --- FORÇAR "VA" AMARELO NO PC E LOGO COMPLETA NO CELULAR (PWA) ---
+# --- FORÇAR TÍTULO SEM "- STREAMLIT" E ÍCONES PARA O IPHONE ---
 favicon_svg = '''data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23111111"/><text x="50%" y="58%" font-family="Arial, sans-serif" font-weight="900" font-size="52" fill="%23F2C900" text-anchor="middle" dominant-baseline="middle">VA</text></svg>'''
 
 apple_touch_icon_html = ""
@@ -34,10 +34,28 @@ st.markdown(f"""
     <head>
         <link rel="icon" type="image/svg+xml" href="{favicon_svg}">
         {apple_touch_icon_html}
+        <title>Frete Vasto</title>
     </head>
+    <script>
+        // Força a alteração do título da aba/PWA no navegador do celular removendo o sufixo do Streamlit
+        document.addEventListener("DOMContentLoaded", function() {{
+            document.title = "Frete Vasto";
+            setInterval(function() {{
+                if (document.title !== "Frete Vasto") {{
+                    document.title = "Frete Vasto";
+                }}
+                // Remove elementos flutuantes do Streamlit via JS no celular
+                var badges = document.querySelectorAll('[class*="viewerBadge"], footer, #rooturator, [data-testid="stStatusWidget"]');
+                badges.forEach(function(el) {{
+                    el.style.display = 'none';
+                    el.remove();
+                }});
+            }}, 500);
+        }});
+    </script>
 """, unsafe_allow_html=True)
 
-# --- CSS COM ALINHAMENTO PERFEITO DA LOGO E OCULTAÇÃO DE ELEMENTOS DO STREAMLIT ---
+# --- CSS COM ALINHAMENTO PERFEITO E OCULTAÇÃO TOTAL DE SELOS ---
 st.markdown("""
     <style>
     /* Fundo geral da aplicação */
