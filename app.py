@@ -4,8 +4,11 @@ import requests
 import base64
 import os
 
+# --- VERIFICA SE EXISTE ÍCONE PERSONALIZADO ---
+icone_path = "icone.png" if os.path.exists("icone.png") else ("logo.png" if os.path.exists("logo.png") else "🚚")
+
 # --- CONFIGURAÇÃO DA PÁGINA ---
-st.set_page_config(page_title="Frete Vasto", page_icon="🚚", layout="centered")
+st.set_page_config(page_title="Frete Vasto", page_icon=icone_path, layout="centered")
 
 # --- FUNÇÃO PARA CARREGAR A LOGO ---
 def get_image_base64():
