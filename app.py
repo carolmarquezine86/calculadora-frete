@@ -22,7 +22,7 @@ logo_b64, logo_ext = get_image_base64("logo.png") or get_image_base64("logo.jpg"
 icone_file = "icone.png" if os.path.exists("icone.png") else "logo.png"
 icon_b64, icon_ext = get_image_base64(icone_file)
 
-# --- FORÇAR TÍTULO SEM "- STREAMLIT" E ÍCONES PARA O IPHONE ---
+# --- FORÇAR TÍTULO E ÍCONES PARA O IPHONE ---
 favicon_svg = '''data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23111111"/><text x="50%" y="58%" font-family="Arial, sans-serif" font-weight="900" font-size="52" fill="%23F2C900" text-anchor="middle" dominant-baseline="middle">VA</text></svg>'''
 
 apple_touch_icon_html = ""
@@ -37,14 +37,12 @@ st.markdown(f"""
         <title>Frete Vasto</title>
     </head>
     <script>
-        // Força a alteração do título da aba/PWA no navegador do celular removendo o sufixo do Streamlit
         document.addEventListener("DOMContentLoaded", function() {{
             document.title = "Frete Vasto";
             setInterval(function() {{
                 if (document.title !== "Frete Vasto") {{
                     document.title = "Frete Vasto";
                 }}
-                // Remove elementos flutuantes do Streamlit via JS no celular
                 var badges = document.querySelectorAll('[class*="viewerBadge"], footer, #rooturator, [data-testid="stStatusWidget"]');
                 badges.forEach(function(el) {{
                     el.style.display = 'none';
@@ -55,23 +53,18 @@ st.markdown(f"""
     </script>
 """, unsafe_allow_html=True)
 
-# --- CSS COM ALINHAMENTO PERFEITO E OCULTAÇÃO TOTAL DE SELOS ---
+# --- CSS PERSONALIZADO ---
 st.markdown("""
     <style>
-    /* Fundo geral da aplicação */
     .stApp { 
         background-color: #F8F9FA; 
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    
-    /* Largura máxima e espaçamento */
     .block-container { 
         padding-top: 1rem !important; 
         padding-bottom: 2rem !important; 
         max-width: 480px !important; 
     }
-    
-    /* HEADER VASTO COM LOGO PERFEITAMENTE CENTRALIZADA */
     .vasto-header {
         background-color: transparent;
         padding: 5px 0px 15px 0px;
@@ -82,7 +75,6 @@ st.markdown("""
         justify-content: center;
         align-items: center;
     }
-    
     .vasto-header img {
         width: 100% !important;
         max-width: 320px !important;
@@ -91,8 +83,6 @@ st.markdown("""
         display: block !important;
         margin: 0 auto !important;
     }
-
-    /* CARD SAÍDA DO CD */
     .cd-card {
         background-color: #111111;
         border-radius: 12px;
@@ -104,13 +94,10 @@ st.markdown("""
     .cd-address { font-size: 14px; font-weight: 800; color: #FFFFFF; margin-top: 2px; }
     .cd-city { font-size: 11px; color: #9CA3AF; }
 
-    /* RÓTULOS E TEXTOS DA PÁGINA */
     label, p, span, div[data-testid="stMarkdownContainer"] p, div[data-testid="stMarkdownContainer"] h3 {
         color: #111111 !important;
         font-weight: 700 !important;
     }
-
-    /* INPUTS */
     .stTextInput input, .stNumberInput input {
         background-color: #FFFFFF !important;
         border: 1.5px solid #D1D5DB !important;
@@ -118,8 +105,6 @@ st.markdown("""
         color: #111111 !important;
         font-weight: 700 !important;
     }
-
-    /* === ESTILIZAÇÃO DOS BOTÕES (AMBOS AMARELOS COM FONTE PRETA) === */
     .stButton > button, button[kind="secondary"] {
         background-color: #F2C900 !important;
         color: #111111 !important;
@@ -132,26 +117,15 @@ st.markdown("""
         transition: all 0.2s ease-in-out !important;
         cursor: pointer !important;
     }
-
     .stButton > button *, button[kind="secondary"] * {
         color: #111111 !important;
         font-weight: 900 !important;
     }
-
-    .stButton > button:hover, button[kind="secondary"]:hover,
-    .stButton > button:active, button[kind="secondary"]:active,
-    .stButton > button:focus, button[kind="secondary"]:focus {
+    .stButton > button:hover, button[kind="secondary"]:hover {
         background-color: #FFFFFF !important;
         color: #111111 !important;
         border-color: #111111 !important;
     }
-    .stButton > button:hover *, button[kind="secondary"]:hover *,
-    .stButton > button:active *, button[kind="secondary"]:active *,
-    .stButton > button:focus *, button[kind="secondary"]:focus * {
-        color: #111111 !important;
-    }
-
-    /* CORREÇÃO DE MÉTRICAS */
     div[data-testid="stMetricValue"] {
         color: #111111 !important;
         font-weight: 900 !important;
@@ -162,8 +136,6 @@ st.markdown("""
         font-weight: 700 !important;
         font-size: 12px !important;
     }
-
-    /* CAIXA AMARELA DE VALOR TOTAL */
     .result-total-box {
         background-color: #F2C900;
         border-radius: 12px;
@@ -186,8 +158,6 @@ st.markdown("""
         line-height: 1;
         margin: 0;
     }
-
-    /* RODAPÉ */
     .footer-credits {
         text-align: center;
         margin-top: 35px;
@@ -197,21 +167,16 @@ st.markdown("""
         font-weight: 600;
         border-top: 1px solid #E5E7EB;
     }
-
-    /* OCULTAR COMPLETAMENTE ELEMENTOS E SELOS FLUTUANTES DO STREAMLIT */
     header { visibility: hidden !important; display: none !important; }
     #MainMenu { visibility: hidden !important; display: none !important; }
     footer { visibility: hidden !important; display: none !important; }
     .stDeployButton { display: none !important; }
     [data-testid="stStatusWidget"] { visibility: hidden !important; display: none !important; }
-    
-    /* REMOVE O SELO "HOSTED WITH STREAMLIT" NO CELULAR E PC */
     div[class*="viewerBadge"], iframe[src*="streamlit"] { display: none !important; opacity: 0 !important; pointer-events: none !important; }
-    #rooturator, footer, .reportview-container .main footer { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
 
-# --- HEADER VASTO COM LOGO CENTRALIZADA ---
+# --- HEADER VASTO ---
 if logo_b64:
     mime_ext = "jpeg" if logo_ext.lower() == "jpg" else logo_ext.lower()
     html_logo = f'<img src="data:image/{mime_ext};base64,{logo_b64}" alt="Vasto Logo">'
@@ -225,7 +190,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 st.markdown("<h2 style='font-size: 22px; font-weight: 900; margin-bottom: 2px; color: #111;'>Calculadora de Frete</h2>", unsafe_allow_html=True)
-st.markdown("<p style='font-size: 13px; color: #6B7280; margin-bottom: 20px;'>Informe o CEP e os dados da entrega para gerar o valor.</p>", unsafe_allow_html=True)
+st.markdown("<p style='font-size: 13px; color: #6B7280; margin-bottom: 20px;'>Informe o CEP e o número para calcular a rota automaticamente.</p>", unsafe_allow_html=True)
 
 # --- CARD SAÍDA DO CD ---
 st.markdown("""
@@ -239,29 +204,25 @@ st.markdown("""
 # --- LÓGICA DE CÁLCULO ---
 ORIGEM_LAT, ORIGEM_LON = -23.550520, -46.633308
 
-def calcular_frete(peso_kg, escada_op, distancia_km):
-    lances = 0
-    if escada_op == "1 lance": lances = 1
-    elif escada_op == "2 lances": lances = 2
-    elif escada_op == "3 ou mais lances": lances = 3
+def calcular_frete(peso_kg, tipo_frete, distancia_km):
+    is_especial = (tipo_frete == "Especial")
 
     if peso_kg <= 300:
-        base, faixa = (80.0, "0 a 300 kg") if lances < 3 else (120.0, "0 a 300 kg")
+        base, faixa = (80.0, "0 a 300 kg") if not is_especial else (120.0, "0 a 300 kg")
     elif peso_kg <= 400:
-        base, faixa = (100.0, "301 a 400 kg") if lances < 3 else (150.0, "301 a 400 kg")
+        base, faixa = (100.0, "301 a 400 kg") if not is_especial else (150.0, "301 a 400 kg")
     else:
         n = math.ceil((peso_kg - 300) / 100)
         tradicional = 100 + (n - 1) * 10
         especial = 150 + (n - 1) * 30
-        base = especial if lances >= 3 else tradicional
+        base = especial if is_especial else tradicional
         faixa = f"{300 + (n - 1) * 100 + 1} a {300 + n * 100} kg"
 
-    tipo = "Especial" if lances >= 3 else "Tradicional"
     adicional = round((distancia_km - 15) * 6.0, 2) if distancia_km > 15 else 0.0
     total = round(base + adicional, 2)
     
     return {
-        "tipo": tipo,
+        "tipo": tipo_frete,
         "faixa": faixa,
         "base": base,
         "adicional": adicional,
@@ -274,38 +235,51 @@ def obter_distancia(cep_destino, numero_casa):
         resp_cep = requests.get(f"https://viacep.com.br/ws/{cep}/json/").json()
         if "erro" in resp_cep: return None, "CEP não encontrado."
         
-        num_str = f", {numero_casa}" if numero_casa else ""
-        end = f"{resp_cep['logradouro']}{num_str}, {resp_cep['localidade']}, {resp_cep['uf']}, Brasil"
+        logradouro = resp_cep.get('logradouro', '')
+        bairro = resp_cep.get('bairro', '')
+        cidade = resp_cep.get('localidade', 'São Paulo')
+        uf = resp_cep.get('uf', 'SP')
         
-        geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={end}", headers={'User-Agent': 'VastoApp'}).json()
+        num_str = f", {numero_casa}" if numero_casa else ""
+        
+        # Tentativa 1: Busca completa com logradouro, número, bairro e cidade
+        query1 = f"{logradouro}{num_str}, {bairro}, {cidade}, {uf}, Brasil"
+        geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={query1}", headers={'User-Agent': 'VastoApp'}).json()
+        
+        # Tentativa 2: Se não achar com o bairro, busca apenas logradouro, número e cidade
         if not geo:
-            end = f"{resp_cep['logradouro']}, {resp_cep['localidade']}, {resp_cep['uf']}, Brasil"
-            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={end}", headers={'User-Agent': 'VastoApp'}).json()
+            query2 = f"{logradouro}{num_str}, {cidade}, {uf}, Brasil"
+            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={query2}", headers={'User-Agent': 'VastoApp'}).json()
 
-        if not geo: return None, "Coordenadas não localizadas."
+        # Tentativa 3: Se ainda não achar, usa o CEP diretamente com a cidade para garantir precisão na região
+        if not geo:
+            query3 = f"CEP {cep}, {cidade}, {uf}, Brasil"
+            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={query3}", headers={'User-Agent': 'VastoApp'}).json()
+
+        if not geo: return None, "Não foi possível localizar este endereço no mapa. Verifique o CEP."
 
         url = f"http://router.project-osrm.org/route/v1/driving/{ORIGEM_LON},{ORIGEM_LAT};{geo[0]['lon']},{geo[0]['lat']}?overview=false"
-        dist_km = requests.get(url).json()['routes'][0]['distance'] / 1000.0
+        rota_resp = requests.get(url).json()
         
-        end_exibicao = f"{resp_cep['logradouro']}{num_str} - {resp_cep['localidade']}/{resp_cep['uf']}"
+        if 'routes' not in rota_resp or len(rota_resp['routes']) == 0:
+            return None, "Erro ao calcular a rota de tráfego."
+
+        dist_km = rota_resp['routes'][0]['distance'] / 1000.0
+        
+        end_exibicao = f"{logradouro}{num_str} - {cidade}/{uf}"
         return round(dist_km, 1), end_exibicao
-    except:
-        return None, "Erro ao processar rota."
+    except Exception as e:
+        return None, "Erro ao processar a rota automática."
 
 # --- FORMULÁRIO ---
 col_cep, col_num = st.columns([2, 1])
 with col_cep:
-    cep = st.text_input("CEP de Destino", placeholder="Ex: 05767-330")
+    cep = st.text_input("CEP de Destino", placeholder="Ex: 04312-040")
 with col_num:
     numero = st.text_input("Número", placeholder="Ex: 551")
 
 peso = st.number_input("Peso total da carga (kg)", min_value=1.0, value=500.0, step=10.0)
-escada = st.radio("Lances de escada", ["Sem escada", "1 lance", "2 lances", "3 ou mais lances"])
-
-manual = st.checkbox("Informar a distância manualmente")
-distancia_manual = 0.0
-if manual:
-    distancia_manual = st.number_input("Distância em KM", min_value=0.0, value=0.0, step=0.1)
+tipo_frete_escolhido = st.radio("Tipo de Frete", ["Tradicional", "Especial"])
 
 st.write("")
 
@@ -321,20 +295,22 @@ if btn_limpar:
 
 # --- EXIBIÇÃO DO RESULTADO ---
 if btn_calcular:
-    dist = distancia_manual
+    dist = 0.0
     info_end = ""
     
-    if cep and not manual:
-        with st.spinner("Calculando rota..."):
+    if not cep:
+        st.error("Por favor, informe o CEP de destino.")
+    else:
+        with st.spinner("Buscando endereço e calculando rota..."):
             calc_dist, info = obter_distancia(cep, numero)
-            if calc_dist:
+            if calc_dist is not None:
                 dist = calc_dist
                 info_end = info
             else:
                 st.error(info)
 
-    if dist > 0 or (manual and dist == 0):
-        res = calcular_frete(peso, escada, dist)
+    if dist > 0 or (info_end and "Erro" not in info_end):
+        res = calcular_frete(peso, tipo_frete_escolhido, dist)
         
         v_base_str = f"{res['base']:.2f}".replace('.', ',')
         v_adic_str = f"{res['adicional']:.2f}".replace('.', ',')
