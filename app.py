@@ -5,7 +5,7 @@ import requests
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(page_title="Frete Vasto", page_icon="🚚", layout="centered")
 
-# --- CSS APENAS PARA ESTILIZAÇÃO VISUAL SEGURA ---
+# --- CSS COM CORREÇÃO DEFINITIVA DE FONTES E BOTÕES ---
 st.markdown("""
     <style>
     /* Fundo geral da aplicação */
@@ -63,8 +63,8 @@ st.markdown("""
     .cd-address { font-size: 14px; font-weight: 800; color: #FFFFFF; margin-top: 2px; }
     .cd-city { font-size: 11px; color: #9CA3AF; }
 
-    /* RÓTULOS DOS CAMPOS */
-    label, p, div[data-testid="stMarkdownContainer"] p {
+    /* RÓTULOS E TEXTOS DA PÁGINA */
+    label, p, span, div[data-testid="stMarkdownContainer"] p, div[data-testid="stMarkdownContainer"] h3 {
         color: #111111 !important;
         font-weight: 700 !important;
     }
@@ -78,8 +78,8 @@ st.markdown("""
         font-weight: 700 !important;
     }
 
-    /* === BOTÕES === */
-    .stButton > button {
+    /* === BOTÕES CORRIGIDOS === */
+    button[kind="secondary"] {
         border-radius: 10px !important;
         padding: 12px 20px !important;
         font-weight: 900 !important;
@@ -89,53 +89,72 @@ st.markdown("""
         cursor: pointer !important;
     }
 
-    /* Botão Limpar */
-    div[data-testid="column"]:nth-child(1) .stButton > button {
+    /* Botão 1: LIMPAR */
+    div[data-testid="column"]:nth-child(1) button {
         background-color: #FFFFFF !important;
         color: #111111 !important;
         border: 2px solid #111111 !important;
     }
-    div[data-testid="column"]:nth-child(1) .stButton > button * {
+    div[data-testid="column"]:nth-child(1) button * {
         color: #111111 !important;
         font-weight: 900 !important;
     }
 
-    /* Botão Calcular (Amarelo) */
-    div[data-testid="column"]:nth-child(2) .stButton > button {
+    /* Botão 2: CALCULAR FRETE */
+    div[data-testid="column"]:nth-child(2) button {
         background-color: #F2C900 !important;
         color: #111111 !important;
         border: 2px solid #F2C900 !important;
     }
-    div[data-testid="column"]:nth-child(2) .stButton > button * {
+    div[data-testid="column"]:nth-child(2) button * {
         color: #111111 !important;
         font-weight: 900 !important;
     }
-    div[data-testid="column"]:nth-child(2) .stButton > button:hover,
-    div[data-testid="column"]:nth-child(2) .stButton > button:active,
-    div[data-testid="column"]:nth-child(2) .stButton > button:focus {
+    div[data-testid="column"]:nth-child(2) button:hover,
+    div[data-testid="column"]:nth-child(2) button:active,
+    div[data-testid="column"]:nth-child(2) button:focus {
         background-color: #FFFFFF !important;
-        color: #111111 !important;
         border-color: #111111 !important;
     }
+    div[data-testid="column"]:nth-child(2) button:hover *,
+    div[data-testid="column"]:nth-child(2) button:active *,
+    div[data-testid="column"]:nth-child(2) button:focus * {
+        color: #111111 !important;
+    }
 
-    /* CAIXA DE RESULTADO */
+    /* CORREÇÃO DE METRICAS DO STREAMLIT */
+    div[data-testid="stMetricValue"] {
+        color: #111111 !important;
+        font-weight: 900 !important;
+        font-size: 20px !important;
+    }
+    div[data-testid="stMetricLabel"] p {
+        color: #6B7280 !important;
+        font-weight: 700 !important;
+        font-size: 12px !important;
+    }
+
+    /* CAIXA AMARELA DE VALOR TOTAL */
     .result-total-box {
         background-color: #F2C900;
         border-radius: 12px;
-        padding: 16px;
+        padding: 18px 20px;
         margin-top: 15px;
+        text-align: left;
     }
-    .result-total-box span {
+    .result-total-box .total-label {
         color: #111111 !important;
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 1px;
+        font-size: 11px !important;
+        font-weight: 900 !important;
+        letter-spacing: 1.5px;
         display: block;
+        margin-bottom: 4px;
     }
-    .result-total-box h1 {
+    .result-total-box .total-value {
         color: #111111 !important;
-        font-size: 32px;
-        font-weight: 900;
+        font-size: 34px !important;
+        font-weight: 900 !important;
+        line-height: 1;
         margin: 0;
     }
 
@@ -265,7 +284,7 @@ with col2:
 if btn_limpar:
     st.rerun()
 
-# --- EXIBIÇÃO DO RESULTADO (USANDO COMPONENTES NATIVOS DO STREAMLIT) ---
+# --- EXIBIÇÃO DO RESULTADO ---
 if btn_calcular:
     dist = distancia_manual
     info_end = ""
@@ -289,24 +308,24 @@ if btn_calcular:
         if info_end:
             st.success(f"📍 Endereço: {info_end} ({dist} km)")
 
-        # CONTAINER NATIVO SEGURO
-        with st.container():
-            st.markdown(f"### 📦 Frete {res['tipo']}")
+        st.markdown(f"<h3 style='color: #111111; font-weight: 900; margin-top: 15px;'>📦 Frete {res['tipo']}</h3>", unsafe_allow_html=True)
+        
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Distância", f"{dist} km")
+        c2.metric("Peso", f"{int(peso)} kg")
+        c3.metric("Faixa", res['faixa'])
+
+        st.markdown(f"""
+            <div style="margin-top: 10px; font-size: 14px; color: #111111;">
+                <p style="margin: 4px 0;"><strong>Valor-base por peso:</strong> R$ {v_base_str}</p>
+                <p style="margin: 4px 0;"><strong>Adicional de distância:</strong> R$ {v_adic_str}</p>
+            </div>
             
-            c1, c2, c3 = st.columns(3)
-            c1.metric("Distância", f"{dist} km")
-            c2.metric("Peso", f"{int(peso)} kg")
-            c3.metric("Faixa", res['faixa'])
-
-            st.write(f"**Valor-base por peso:** R$ {v_base_str}")
-            st.write(f"**Adicional de distância:** R$ {v_adic_str}")
-
-            st.markdown(f"""
-                <div class="result-total-box">
-                    <span>VALOR TOTAL DO FRETE</span>
-                    <h1>R$ {v_tot_str}</h1>
-                </div>
-            """, unsafe_allow_html=True)
+            <div class="result-total-box">
+                <span class="total-label">VALOR TOTAL DO FRETE</span>
+                <p class="total-value">R$ {v_tot_str}</p>
+            </div>
+        """, unsafe_allow_html=True)
 
 # --- RODAPÉ ---
 st.markdown("""
