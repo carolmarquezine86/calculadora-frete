@@ -5,7 +5,7 @@ import requests
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(page_title="Frete Vasto", page_icon="🚚", layout="centered")
 
-# --- CSS COM CORREÇÃO DEFINITIVA DE FONTES E BOTÕES ---
+# --- CSS COM AMBOS OS BOTÕES AMARELOS E FONTE PRETA ---
 st.markdown("""
     <style>
     /* Fundo geral da aplicação */
@@ -78,8 +78,11 @@ st.markdown("""
         font-weight: 700 !important;
     }
 
-    /* === BOTÕES CORRIGIDOS === */
-    button[kind="secondary"] {
+    /* === ESTILIZAÇÃO DOS BOTÕES (AMBOS AMARELOS COM FONTE PRETA) === */
+    .stButton > button, button[kind="secondary"] {
+        background-color: #F2C900 !important;
+        color: #111111 !important;
+        border: 2px solid #F2C900 !important;
         border-radius: 10px !important;
         padding: 12px 20px !important;
         font-weight: 900 !important;
@@ -89,40 +92,27 @@ st.markdown("""
         cursor: pointer !important;
     }
 
-    /* Botão 1: LIMPAR */
-    div[data-testid="column"]:nth-child(1) button {
-        background-color: #FFFFFF !important;
-        color: #111111 !important;
-        border: 2px solid #111111 !important;
-    }
-    div[data-testid="column"]:nth-child(1) button * {
+    /* Força a cor do texto do botão para preto */
+    .stButton > button *, button[kind="secondary"] * {
         color: #111111 !important;
         font-weight: 900 !important;
     }
 
-    /* Botão 2: CALCULAR FRETE */
-    div[data-testid="column"]:nth-child(2) button {
-        background-color: #F2C900 !important;
-        color: #111111 !important;
-        border: 2px solid #F2C900 !important;
-    }
-    div[data-testid="column"]:nth-child(2) button * {
-        color: #111111 !important;
-        font-weight: 900 !important;
-    }
-    div[data-testid="column"]:nth-child(2) button:hover,
-    div[data-testid="column"]:nth-child(2) button:active,
-    div[data-testid="column"]:nth-child(2) button:focus {
+    /* Efeito ao passar o mouse / clicar em qualquer um dos dois botões */
+    .stButton > button:hover, button[kind="secondary"]:hover,
+    .stButton > button:active, button[kind="secondary"]:active,
+    .stButton > button:focus, button[kind="secondary"]:focus {
         background-color: #FFFFFF !important;
+        color: #111111 !important;
         border-color: #111111 !important;
     }
-    div[data-testid="column"]:nth-child(2) button:hover *,
-    div[data-testid="column"]:nth-child(2) button:active *,
-    div[data-testid="column"]:nth-child(2) button:focus * {
+    .stButton > button:hover *, button[kind="secondary"]:hover *,
+    .stButton > button:active *, button[kind="secondary"]:active *,
+    .stButton > button:focus *, button[kind="secondary"]:focus * {
         color: #111111 !important;
     }
 
-    /* CORREÇÃO DE METRICAS DO STREAMLIT */
+    /* CORREÇÃO DE MÉTRICAS */
     div[data-testid="stMetricValue"] {
         color: #111111 !important;
         font-weight: 900 !important;
@@ -274,7 +264,7 @@ if manual:
 
 st.write("")
 
-# --- BOTÕES ---
+# --- BOTÕES (AMBOS AMARELOS COM FONTE PRETA) ---
 col1, col2 = st.columns([1, 1.5])
 with col1:
     btn_limpar = st.button("↺ Limpar")
