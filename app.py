@@ -5,20 +5,20 @@ import requests
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(page_title="Frete Vasto", page_icon="🚚", layout="centered")
 
-# --- CSS SEGURO E ROBUSTO ---
+# --- CSS APENAS PARA ESTILIZAÇÃO VISUAL SEGURA ---
 st.markdown("""
     <style>
-    /* Fundo da aplicação */
+    /* Fundo geral da aplicação */
     .stApp { 
         background-color: #F8F9FA; 
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     
-    /* Largura máxima centralizada */
+    /* Largura máxima e espaçamento */
     .block-container { 
         padding-top: 1rem !important; 
         padding-bottom: 2rem !important; 
-        max-width: 500px !important; 
+        max-width: 480px !important; 
     }
     
     /* HEADER VASTO */
@@ -63,56 +63,83 @@ st.markdown("""
     .cd-address { font-size: 14px; font-weight: 800; color: #FFFFFF; margin-top: 2px; }
     .cd-city { font-size: 11px; color: #9CA3AF; }
 
-    /* TEXTOS E LABELS ESCUROS E VISÍVEIS */
-    label, p, span, div[data-testid="stMarkdownContainer"] p {
+    /* RÓTULOS DOS CAMPOS */
+    label, p, div[data-testid="stMarkdownContainer"] p {
         color: #111111 !important;
         font-weight: 700 !important;
     }
 
-    /* INPUTS COM BORDA E TEXTO PRETO */
+    /* INPUTS */
     .stTextInput input, .stNumberInput input {
         background-color: #FFFFFF !important;
-        border: 1px solid #D1D5DB !important;
+        border: 1.5px solid #D1D5DB !important;
         border-radius: 8px !important;
         color: #111111 !important;
-        font-weight: 600 !important;
+        font-weight: 700 !important;
     }
 
-    /* BOTÕES DA ESCADA (RADIO) */
-    div[role="radiogroup"] > label {
-        background-color: #FFFFFF !important;
-        border: 1px solid #D1D5DB !important;
-        padding: 6px 14px !important;
-        border-radius: 20px !important;
-        color: #111111 !important;
-    }
-
-    /* BOTÃO LIMPAR (PRETO COM TEXTO BRANCO) */
-    div[data-testid="column"]:nth-child(1) .stButton > button {
-        background-color: #111111 !important;
-        color: #FFFFFF !important;
-        border: none !important;
+    /* === BOTÕES === */
+    .stButton > button {
         border-radius: 10px !important;
-        padding: 12px !important;
-        font-weight: 800 !important;
+        padding: 12px 20px !important;
+        font-weight: 900 !important;
+        font-size: 15px !important;
         width: 100% !important;
+        transition: all 0.2s ease-in-out !important;
+        cursor: pointer !important;
     }
 
-    /* BOTÃO CALCULAR (AMARELO COM TEXTO PRETO) */
+    /* Botão Limpar */
+    div[data-testid="column"]:nth-child(1) .stButton > button {
+        background-color: #FFFFFF !important;
+        color: #111111 !important;
+        border: 2px solid #111111 !important;
+    }
+    div[data-testid="column"]:nth-child(1) .stButton > button * {
+        color: #111111 !important;
+        font-weight: 900 !important;
+    }
+
+    /* Botão Calcular (Amarelo) */
     div[data-testid="column"]:nth-child(2) .stButton > button {
         background-color: #F2C900 !important;
         color: #111111 !important;
-        border: none !important;
-        border-radius: 10px !important;
-        padding: 12px !important;
-        font-weight: 900 !important;
-        width: 100% !important;
+        border: 2px solid #F2C900 !important;
     }
-    div[data-testid="column"]:nth-child(2) .stButton > button p {
+    div[data-testid="column"]:nth-child(2) .stButton > button * {
         color: #111111 !important;
+        font-weight: 900 !important;
+    }
+    div[data-testid="column"]:nth-child(2) .stButton > button:hover,
+    div[data-testid="column"]:nth-child(2) .stButton > button:active,
+    div[data-testid="column"]:nth-child(2) .stButton > button:focus {
+        background-color: #FFFFFF !important;
+        color: #111111 !important;
+        border-color: #111111 !important;
     }
 
-    /* RODAPÉ CAROL MARQUEZINE */
+    /* CAIXA DE RESULTADO */
+    .result-total-box {
+        background-color: #F2C900;
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 15px;
+    }
+    .result-total-box span {
+        color: #111111 !important;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        display: block;
+    }
+    .result-total-box h1 {
+        color: #111111 !important;
+        font-size: 32px;
+        font-weight: 900;
+        margin: 0;
+    }
+
+    /* RODAPÉ */
     .footer-credits {
         text-align: center;
         margin-top: 35px;
@@ -123,7 +150,6 @@ st.markdown("""
         border-top: 1px solid #E5E7EB;
     }
 
-    /* OCULTAR NATIVOS */
     header { visibility: hidden; }
     #MainMenu { visibility: hidden; }
     footer { visibility: hidden; }
@@ -228,16 +254,18 @@ if manual:
     distancia_manual = st.number_input("Distância em KM", min_value=0.0, value=0.0, step=0.1)
 
 st.write("")
+
+# --- BOTÕES ---
 col1, col2 = st.columns([1, 1.5])
 with col1:
-    btn_limpar = st.button("Limpar")
+    btn_limpar = st.button("↺ Limpar")
 with col2:
-    btn_calcular = st.button("Calcular Frete")
+    btn_calcular = st.button("🖩 Calcular Frete")
 
 if btn_limpar:
     st.rerun()
 
-# --- EXIBIÇÃO DE RESULTADO SEGURO ---
+# --- EXIBIÇÃO DO RESULTADO (USANDO COMPONENTES NATIVOS DO STREAMLIT) ---
 if btn_calcular:
     dist = distancia_manual
     info_end = ""
@@ -261,45 +289,24 @@ if btn_calcular:
         if info_end:
             st.success(f"📍 Endereço: {info_end} ({dist} km)")
 
-        # Card de resultado totalmente formatado
-        st.markdown(f"""
-            <div style="background-color: #111111; border-radius: 16px; padding: 20px; color: white; margin-top: 15px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <span style="color: #9CA3AF; font-size: 11px; font-weight: 800;">RESULTADO DO ORÇAMENTO</span>
-                    <span style="background-color: #F2C900; color: #111; font-weight: 800; font-size: 11px; padding: 3px 10px; border-radius: 12px;">{res['tipo']}</span>
-                </div>
-                <h3 style="color: #FFFFFF; margin: 0 0 15px 0; font-size: 22px; font-weight: 900;">Frete {res['tipo']}</h3>
-                
-                <div style="display: flex; justify-content: space-between; background-color: #1A1A1A; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
-                    <div>
-                        <div style="color: #9CA3AF; font-size: 11px;">Distância</div>
-                        <div style="color: #FFF; font-weight: 800; font-size: 15px;">{dist} km</div>
-                    </div>
-                    <div>
-                        <div style="color: #9CA3AF; font-size: 11px;">Peso</div>
-                        <div style="color: #FFF; font-weight: 800; font-size: 15px;">{int(peso)} kg</div>
-                    </div>
-                    <div>
-                        <div style="color: #9CA3AF; font-size: 11px;">Faixa</div>
-                        <div style="color: #FFF; font-weight: 800; font-size: 15px;">{res['faixa']}</div>
-                    </div>
-                </div>
+        # CONTAINER NATIVO SEGURO
+        with st.container():
+            st.markdown(f"### 📦 Frete {res['tipo']}")
+            
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Distância", f"{dist} km")
+            c2.metric("Peso", f"{int(peso)} kg")
+            c3.metric("Faixa", res['faixa'])
 
-                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
-                    <span style="color: #9CA3AF;">Valor-base por peso</span>
-                    <span style="color: #FFF; font-weight: 700;">R$ {v_base_str}</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 15px;">
-                    <span style="color: #9CA3AF;">Adicional de distância</span>
-                    <span style="color: #FFF; font-weight: 700;">R$ {v_adic_str}</span>
-                </div>
+            st.write(f"**Valor-base por peso:** R$ {v_base_str}")
+            st.write(f"**Adicional de distância:** R$ {v_adic_str}")
 
-                <div style="background-color: #F2C900; border-radius: 12px; padding: 14px; text-align: left;">
-                    <div style="color: #111; font-size: 10px; font-weight: 800; letter-spacing: 1px;">VALOR TOTAL DO FRETE</div>
-                    <div style="color: #111; font-size: 30px; font-weight: 900; margin-top: 2px;">R$ {v_tot_str}</div>
+            st.markdown(f"""
+                <div class="result-total-box">
+                    <span>VALOR TOTAL DO FRETE</span>
+                    <h1>R$ {v_tot_str}</h1>
                 </div>
-            </div>
-        """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
 
 # --- RODAPÉ ---
 st.markdown("""
