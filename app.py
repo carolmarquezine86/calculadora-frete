@@ -189,7 +189,7 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-st.markdown("<h2 style='font-size: 22px; font-weight: 900; margin-bottom: 2px; color: #111;'>Calculadora de Frete</h2>", unsafe_allow_html=Type)
+st.markdown("<h2 style='font-size: 22px; font-weight: 900; margin-bottom: 2px; color: #111;'>Calculadora de Frete</h2>", unsafe_allow_html=True)
 st.markdown("<p style='font-size: 13px; color: #6B7280; margin-bottom: 20px;'>Informe o CEP e o número para calcular a rota automaticamente.</p>", unsafe_allow_html=True)
 
 # --- CARD SAÍDA DO CD ---
@@ -237,25 +237,22 @@ def obter_distancia(cep_destino, numero_casa):
         
         logradouro = resp_cep.get('logradouro', '')
         bairro = resp_cep.get('bairro', '')
-        cidade = resp_cep.get('localidade', 'São Paulo')
-        uf = resp_cep.get('uf', 'SP')
+        cidade = "São Paulo"
+        uf = "SP"
         
         num_str = f", {numero_casa}" if numero_casa else ""
         
-        # Prioriza a busca estrita por CEP dentro de São Paulo para evitar homônimos errados
-        queries = [
-            f"CEP {cep}, {cidade}, {uf}, Brasil",
-            f"{logradouro}{num_str}, {cidade}, {uf}, Brasil",
-            f"{cep}, Brasil"
-        ]
+        # Consultas estruturadas fixando São Paulo/SP na string de busca para evitar homônimos fora do estado
+        query1 = f"{logradouro}{num_str}, {bairro}, {cidade}, {uf}, Brasil"
+        geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(query1)}", headers={'User-Agent': 'VastoApp'}).json()
         
-        geo = []
-        for q in queries:
-            url_geo = f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(q)}"
-            resp = requests.get(url_geo, headers={'User-Agent': 'VastoApp'}).json()
-            if resp:
-                geo = resp
-                break
+        if not geo:
+            query2 = f"{logradouro}{num_str}, {cidade}, {uf}, Brasil"
+            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(query2)}", headers={'User-Agent': 'VastoApp'}).json()
+
+        if not geo:
+            query3 = f"CEP {cep}, {cidade}, {uf}, Brasil"
+            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(query3)}", headers={'User-Agent': 'VastoApp'}).json()
 
         if not geo: return None, "Não foi possível localizar este endereço no mapa. Verifique o CEP."
 
