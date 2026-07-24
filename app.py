@@ -37,7 +37,7 @@ st.markdown(f"""
     </head>
 """, unsafe_allow_html=True)
 
-# --- CSS COM ALINHAMENTO PERFEITO DA LOGO E OCULTAÇÃO DE ELEMENTOS DO STREAMLIT/GITHUB ---
+# --- CSS COM ALINHAMENTO PERFEITO DA LOGO E OCULTAÇÃO DE ELEMENTOS DO STREAMLIT ---
 st.markdown("""
     <style>
     /* Fundo geral da aplicação */
@@ -180,13 +180,16 @@ st.markdown("""
         border-top: 1px solid #E5E7EB;
     }
 
-    /* OCULTAR COMPLETAMENTE ELEMENTOS DO STREAMLIT E LOGOS DO GITHUB FLUTUANTES */
+    /* OCULTAR COMPLETAMENTE ELEMENTOS E SELOS FLUTUANTES DO STREAMLIT */
     header { visibility: hidden !important; display: none !important; }
     #MainMenu { visibility: hidden !important; display: none !important; }
     footer { visibility: hidden !important; display: none !important; }
     .stDeployButton { display: none !important; }
     [data-testid="stStatusWidget"] { visibility: hidden !important; display: none !important; }
-    .viewerBadge_container__1QSob { display: none !important; }
+    
+    /* REMOVE O SELO "HOSTED WITH STREAMLIT" NO CELULAR E PC */
+    div[class*="viewerBadge"], iframe[src*="streamlit"] { display: none !important; opacity: 0 !important; pointer-events: none !important; }
+    #rooturator, footer, .reportview-container .main footer { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
 
