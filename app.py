@@ -102,6 +102,18 @@ st.markdown("""
         color: #FFF !important;
     }
     
+    /* RODAPÉ CAROL MARQUEZINE */
+    .footer-credits {
+        text-align: center;
+        margin-top: 40px;
+        padding: 15px 0 10px 0;
+        color: #888888;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border-top: 1px solid #E0E0E0;
+    }
+    
     /* Ocultar barra nativa do Streamlit */
     header {visibility: hidden;}
     </style>
@@ -125,13 +137,11 @@ st.markdown("""
 ORIGEM_LAT, ORIGEM_LON = -23.550520, -46.633308
 
 def calcular_frete(peso_kg, escada_op, distancia_km):
-    # Tradução da seleção de escadas
     lances = 0
     if escada_op == "1 lance": lances = 1
     elif escada_op == "2 lances": lances = 2
     elif escada_op == "3 ou mais lances": lances = 3
 
-    # Faixa de Peso
     if peso_kg <= 300:
         tradicional, especial, faixa = 80.0, 120.0, "0 a 300 kg"
     elif peso_kg <= 400:
@@ -189,7 +199,6 @@ with col1:
 with col2:
     btn_calcular = st.button("🖩 Calcular Frete")
 
-# Reset da página caso clique em limpar
 if btn_limpar:
     st.rerun()
 
@@ -214,3 +223,10 @@ if btn_calcular:
                 <p style="color: #FFF; font-size: 13px; margin: 0;">Modalidade: {res['tipo']} | Faixa: {res['faixa']}</p>
             </div>
         """, unsafe_allow_html=True)
+
+# --- RODAPÉ COM A ASSINATURA ---
+st.markdown("""
+    <div class="footer-credits">
+        Desenvolvido por Carol Marquezine
+    </div>
+""", unsafe_allow_html=True)
