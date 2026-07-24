@@ -16,7 +16,7 @@ def get_image_base64():
                 return base64.b64encode(img_file.read()).decode(), ext
     return None, None
 
-# --- CSS COM LOGO GRANDE E SEM O BADGE ONLINE ---
+# --- CSS COM ALINHAMENTO PERFEITO DA LOGO E BOTÕES AMARELOS ---
 st.markdown("""
     <style>
     /* Fundo geral da aplicação */
@@ -32,13 +32,25 @@ st.markdown("""
         max-width: 480px !important; 
     }
     
-    /* HEADER VASTO COM LOGO GRANDE E CENTRALIZADA */
+    /* HEADER VASTO COM LOGO PERFEITAMENTE CENTRALIZADA */
     .vasto-header {
         background-color: transparent;
         padding: 5px 0px 15px 0px;
         margin-bottom: 10px;
         text-align: center;
         width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .vasto-header img {
+        width: 100% !important;
+        max-width: 320px !important;
+        height: auto !important;
+        object-fit: contain !important;
+        display: block !important;
+        margin: 0 auto !important;
     }
 
     /* CARD SAÍDA DO CD */
@@ -153,12 +165,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- HEADER VASTO COM LOGO GRANDE ---
+# --- HEADER VASTO COM LOGO CENTRALIZADA ---
 logo_base64, logo_ext = get_image_base64()
 
 if logo_base64:
     mime_ext = "jpeg" if logo_ext.lower() == "jpg" else logo_ext.lower()
-    html_logo = f'<img src="data:image/{mime_ext};base64,{logo_base64}" alt="Vasto Logo" style="width: 100%; max-width: 420px; height: auto; object-fit: contain; display: block; margin: 0 auto;">'
+    html_logo = f'<img src="data:image/{mime_ext};base64,{logo_base64}" alt="Vasto Logo">'
 else:
     html_logo = '<h1 style="margin: 0; font-size: 26px; font-weight: 900; color: #111; letter-spacing: 1px; text-align: center;">VASTO ACABAMENTOS</h1>'
 
