@@ -1,11 +1,22 @@
 import streamlit as st
 import math
 import requests
+import base64
+import os
 
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(page_title="Frete Vasto", page_icon="🚚", layout="centered")
 
-# --- CSS COM AMBOS OS BOTÕES AMARELOS E FONTE PRETA ---
+# --- FUNÇÃO PARA CARREGAR A LOGO (QUALQUER EXTENSÃO) ---
+def get_image_base64():
+    for ext in ["png", "jpg", "jpeg", "PNG", "JPG", "JPEG"]:
+        path = f"logo.{ext}"
+        if os.path.exists(path):
+            with open(path, "rb") as img_file:
+                return base64.b64encode(img_file.read()).decode(), ext
+    return None, None
+
+# --- CSS COM AMBOS OS BOTÕES AMARELOS E HEADER LIMPO ---
 st.markdown("""
     <style>
     /* Fundo geral da aplicação */
@@ -21,27 +32,15 @@ st.markdown("""
         max-width: 480px !important; 
     }
     
-    /* HEADER VASTO */
+    /* HEADER VASTO (FUNDO TRANSPARENTE PARA A LOGO) */
     .vasto-header {
-        background-color: #F2C900;
-        padding: 16px 20px;
-        border-radius: 12px;
+        background-color: transparent;
+        padding: 10px 0px;
         margin-bottom: 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
-    .logo-box {
-        background-color: #111;
-        color: #F2C900;
-        font-weight: 900;
-        font-size: 20px;
-        padding: 6px 12px;
-        border-radius: 8px;
-        margin-right: 10px;
-    }
-    .text-box h1 { margin: 0; font-size: 16px; font-weight: 900; color: #111; letter-spacing: 1px; line-height: 1.1; }
-    .text-box p { margin: 0; font-size: 9px; font-weight: 700; color: #111; letter-spacing: 2px; }
     .badge {
         background-color: rgba(0,0,0,0.08);
         padding: 5px 12px;
@@ -165,15 +164,20 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- HEADER VASTO ---
-st.markdown("""
+# --- HEADER VASTO COM LOGO OFICIAL ---
+logo_base64, logo_ext = get_image_base64()
+
+if logo_base64:
+    # Padroniza a extensão para o formato correto do HTML
+    mime_ext = "jpeg" if logo_ext.lower() == "jpg" else logo_ext.lower()
+    html_logo = f'<img src="data:image/{mime_ext};base64,{logo_base64}" alt="Vasto Logo" style="height: 42px; object-fit: contain;">'
+else:
+    html_logo = '<h1 style="margin: 0; font-size: 22px; font-weight: 900; color: #111; letter-spacing: 1px;">VASTO <span style="font-size: 10px; font-weight: 700; letter-spacing: 2px;">ACABAMENTOS</span></h1>'
+
+st.markdown(f"""
     <div class="vasto-header">
-        <div style="display: flex; align-items: center;">
-            <div class="logo-box">V</div>
-            <div class="text-box">
-                <h1>VASTO</h1>
-                <p>ACABAMENTOS</p>
-            </div>
+        <div>
+            {html_logo}
         </div>
         <div class="badge"><span style="color: #10B981;">●</span> Online</div>
     </div>
@@ -264,7 +268,7 @@ if manual:
 
 st.write("")
 
-# --- BOTÕES (AMBOS AMARELOS COM FONTE PRETA) ---
+# --- BOTÕES ---
 col1, col2 = st.columns([1, 1.5])
 with col1:
     btn_limpar = st.button("↺ Limpar")
