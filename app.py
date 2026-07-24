@@ -237,22 +237,24 @@ def obter_distancia(cep_destino, numero_casa):
         
         logradouro = resp_cep.get('logradouro', '')
         bairro = resp_cep.get('bairro', '')
-        cidade = "São Paulo"
-        uf = "SP"
+        cidade = resp_cep.get('localidade', 'São Paulo')
+        uf = resp_cep.get('uf', 'SP')
         
         num_str = f", {numero_casa}" if numero_casa else ""
         
-        # Consultas estruturadas fixando São Paulo/SP na string de busca para evitar homônimos fora do estado
-        query1 = f"{logradouro}{num_str}, {bairro}, {cidade}, {uf}, Brasil"
-        geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(query1)}", headers={'User-Agent': 'VastoApp'}).json()
+        queries = [
+            f"CEP {cep}, {cidade}, {uf}, Brasil",
+            f"{logradouro}{num_str}, {cidade}, {uf}, Brasil",
+            f"{cep}, Brasil"
+        ]
         
-        if not geo:
-            query2 = f"{logradouro}{num_str}, {cidade}, {uf}, Brasil"
-            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(query2)}", headers={'User-Agent': 'VastoApp'}).json()
-
-        if not geo:
-            query3 = f"CEP {cep}, {cidade}, {uf}, Brasil"
-            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(query3)}", headers={'User-Agent': 'VastoApp'}).json()
+        geo = []
+        for q in queries:
+            url_geo = f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(q)}"
+            resp = requests.get(url_geo, headers={'User-Agent': 'VastoApp'}).json()
+            if resp:
+                geo = resp
+                break
 
         if not geo: return None, "Não foi possível localizar este endereço no mapa. Verifique o CEP."
 
