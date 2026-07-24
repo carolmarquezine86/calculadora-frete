@@ -10,14 +10,32 @@ icone_path = "icone.png" if os.path.exists("icone.png") else ("logo.png" if os.p
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(page_title="Frete Vasto", page_icon=icone_path, layout="centered")
 
-# --- FUNÇÃO PARA CARREGAR A LOGO ---
-def get_image_base64():
-    for ext in ["png", "jpg", "jpeg", "PNG", "JPG", "JPEG"]:
-        path = f"logo.{ext}"
-        if os.path.exists(path):
-            with open(path, "rb") as img_file:
-                return base64.b64encode(img_file.read()).decode(), ext
+# --- FUNÇÃO PARA CARREGAR A LOGO / ÍCONE EM BASE64 ---
+def get_image_base64(filename):
+    if os.path.exists(filename):
+        with open(filename, "rb") as img_file:
+            ext = filename.split('.')[-1]
+            return base64.b64encode(img_file.read()).decode(), ext
     return None, None
+
+logo_b64, logo_ext = get_image_base64("logo.png") or get_image_base64("logo.jpg")
+icone_file = "icone.png" if os.path.exists("icone.png") else "logo.png"
+icon_b64, icon_ext = get_image_base64(icone_file)
+
+# --- FORÇAR "VA" AMARELO NO PC E LOGO COMPLETA NO CELULAR (PWA) ---
+favicon_svg = '''data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23111111"/><text x="50%" y="58%" font-family="Arial, sans-serif" font-weight="900" font-size="52" fill="%23F2C900" text-anchor="middle" dominant-baseline="middle">VA</text></svg>'''
+
+apple_touch_icon_html = ""
+if icon_b64:
+    mime = "jpeg" if icon_ext.lower() == "jpg" else icon_ext.lower()
+    apple_touch_icon_html = f'<link rel="apple-touch-icon" href="data:image/{mime};base64,{icon_b64}">'
+
+st.markdown(f"""
+    <head>
+        <link rel="icon" type="image/svg+xml" href="{favicon_svg}">
+        {apple_touch_icon_html}
+    </head>
+""", unsafe_allow_html=True)
 
 # --- CSS COM ALINHAMENTO PERFEITO DA LOGO E BOTÕES AMARELOS ---
 st.markdown("""
@@ -169,11 +187,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- HEADER VASTO COM LOGO CENTRALIZADA ---
-logo_base64, logo_ext = get_image_base64()
-
-if logo_base64:
+if logo_b64:
     mime_ext = "jpeg" if logo_ext.lower() == "jpg" else logo_ext.lower()
-    html_logo = f'<img src="data:image/{mime_ext};base64,{logo_base64}" alt="Vasto Logo">'
+    html_logo = f'<img src="data:image/{mime_ext};base64,{logo_b64}" alt="Vasto Logo">'
 else:
     html_logo = '<h1 style="margin: 0; font-size: 26px; font-weight: 900; color: #111; letter-spacing: 1px; text-align: center;">VASTO ACABAMENTOS</h1>'
 
