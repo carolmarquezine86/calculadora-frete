@@ -95,19 +95,23 @@ st.markdown("""
         transition: all 0.2s ease !important;
     }
     
+    /* Botão Limpar (Preto com texto Branco) */
+    div[data-testid="column"]:nth-child(1) .stButton > button {
+        background-color: #111111 !important;
+        color: #FFFFFF !important;
+    }
+
     /* Botão Calcular (Amarelo Vasto) */
     div[data-testid="column"]:nth-child(2) .stButton > button {
         background-color: #F2C900 !important; 
         color: #111111 !important;
     }
+    div[data-testid="column"]:nth-child(2) .stButton > button p {
+        color: #111111 !important;
+        font-weight: 900 !important;
+    }
     div[data-testid="column"]:nth-child(2) .stButton > button:hover {
         background-color: #D6B200 !important;
-    }
-
-    /* Botão Limpar (Preto) */
-    div[data-testid="column"]:nth-child(1) .stButton > button {
-        background-color: #111111 !important;
-        color: #FFFFFF !important;
     }
     
     /* RODAPÉ CAROL MARQUEZINE */
@@ -121,7 +125,7 @@ st.markdown("""
         border-top: 1px solid #E5E7EB;
     }
 
-    /* Ocultar elementos desnecessários da tela */
+    /* Ocultar elementos desnecessários */
     header { visibility: hidden; }
     #MainMenu { visibility: hidden; }
     footer { visibility: hidden; }
@@ -166,19 +170,31 @@ def calcular_frete(peso_kg, escada_op, distancia_km):
     
     return {"tipo": tipo, "faixa": faixa, "total": round(base + adicional, 2)}
 
-def obter_distancia(cep_destino):
+def obter_distancia(cep_destino, numero_casa):
     try:
         cep = cep_destino.replace("-", "").replace(".", "").strip()
         resp_cep = requests.get(f"https://viacep.com.br/ws/{cep}/json/").json()
         if "erro" in resp_cep: return None, "CEP não encontrado."
         
-        end = f"{resp_cep['logradouro']}, {resp_cep['localidade']}, {resp_cep['uf']}, Brasil"
+        # Inclui o número da casa no endereço para a busca geográfica
+        num_str = f", {numero_casa}" if numero_casa else ""
+        end = f"{resp_cep['logradouro']}{num_str}, {resp_cep['localidade']}, {resp_cep['uf']}, Brasil"
+        
         geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={end}", headers={'User-Agent': 'VastoApp'}).json()
+        
+        # Caso a busca com número falhe, tenta buscar apenas a rua para não travar
+        if not geo:
+            end = f"{resp_cep['logradouro']}, {resp_cep['localidade']}, {resp_cep['uf']}, Brasil"
+            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={end}", headers={'User-Agent': 'VastoApp'}).json()
+
         if not geo: return None, "Coordenadas não localizadas."
 
         url = f"http://router.project-osrm.org/route/v1/driving/{ORIGEM_LON},{ORIGEM_LAT};{geo[0]['lon']},{geo[0]['lat']}?overview=false"
         dist_km = requests.get(url).json()['routes'][0]['distance'] / 1000.0
-        return round(dist_km, 2), end
+        
+        # Exibe o endereço completo bonitinho
+        end_exibicao = f"{resp_cep['logradouro']}{num_str} - {resp_cep['localidade']}/{resp_cep['uf']}"
+        return round(dist_km, 2), end_exibicao
     except:
         return None, "Erro ao processar rota."
 
@@ -193,19 +209,24 @@ manual = st.checkbox("Informar a distância manualmente")
 
 distancia_manual = 0.0
 cep = ""
+numero = ""
 
 if manual:
     distancia_manual = st.number_input("Distância em KM", min_value=0.0, value=0.0, step=1.0)
 else:
-    cep = st.text_input("CEP de Destino", placeholder="Ex: 01001-000")
+    col_cep, col_num = st.columns([2, 1])
+    with col_cep:
+        cep = st.text_input("CEP de Destino", placeholder="Ex: 01001-000")
+    with col_num:
+        numero = st.text_input("Número", placeholder="Ex: 123")
 
 # --- BOTÕES ---
 st.write("")
 col1, col2 = st.columns([1, 1.5])
 with col1:
-    btn_limpar = st.button("↻ Limpar")
+    btn_limpar = st.button("Limpar")
 with col2:
-    btn_calcular = st.button("🖩 Calcular Frete")
+    btn_calcular = st.button("Calcular Frete")
 
 if btn_limpar:
     st.rerun()
@@ -215,19 +236,20 @@ if btn_calcular:
     dist = distancia_manual
     if cep and not manual:
         with st.spinner("Calculando rota por CEP..."):
-            calc_dist, info = obter_distancia(cep)
+            calc_dist, info = obter_distancia(cep, numero)
             if calc_dist:
                 dist = calc_dist
-                st.success(f"📍 **Endereço:** {info} ({dist} km)")
+                st.success(f"📍 Endereço: {info} ({dist} km)")
             else:
                 st.error(info)
 
     if dist > 0 or (manual and dist == 0):
         res = calcular_frete(peso, escada, dist)
+        valor_br = f"{res['total']:.2f}".replace(".", ",")
         st.markdown(f"""
             <div style="background-color: #111111; border-left: 6px solid #F2C900; padding: 20px; border-radius: 10px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
                 <span style="color: #9CA3AF; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Valor Estimado do Frete</span>
-                <h1 style="color: #F2C900; margin: 4px 0 10px 0; font-size: 34px; font-weight: 800;">R$ {res['total']:.2f}</h1>
+                <h1 style="color: #F2C900; margin: 4px 0 10px 0; font-size: 34px; font-weight: 800;">R$ {valor_br}</h1>
                 <p style="color: #E5E7EB; font-size: 13px; margin: 0;">Modalidade: <strong>{res['tipo']}</strong> | Faixa: <strong>{res['faixa']}</strong></p>
             </div>
         """, unsafe_allow_html=True)
