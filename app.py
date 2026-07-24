@@ -7,7 +7,7 @@ import os
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(page_title="Frete Vasto", page_icon="🚚", layout="centered")
 
-# --- FUNÇÃO PARA CARREGAR A LOGO (QUALQUER EXTENSÃO) ---
+# --- FUNÇÃO PARA CARREGAR A LOGO ---
 def get_image_base64():
     for ext in ["png", "jpg", "jpeg", "PNG", "JPG", "JPEG"]:
         path = f"logo.{ext}"
@@ -16,7 +16,7 @@ def get_image_base64():
                 return base64.b64encode(img_file.read()).decode(), ext
     return None, None
 
-# --- CSS COM AMBOS OS BOTÕES AMARELOS E HEADER LIMPO ---
+# --- CSS COM LOGO GRANDE E SEM O BADGE ONLINE ---
 st.markdown("""
     <style>
     /* Fundo geral da aplicação */
@@ -32,22 +32,13 @@ st.markdown("""
         max-width: 480px !important; 
     }
     
-    /* HEADER VASTO (FUNDO TRANSPARENTE PARA A LOGO) */
+    /* HEADER VASTO COM LOGO GRANDE E CENTRALIZADA */
     .vasto-header {
         background-color: transparent;
-        padding: 10px 0px;
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .badge {
-        background-color: rgba(0,0,0,0.08);
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 700;
-        color: #111;
+        padding: 5px 0px 15px 0px;
+        margin-bottom: 10px;
+        text-align: center;
+        width: 100%;
     }
 
     /* CARD SAÍDA DO CD */
@@ -91,13 +82,11 @@ st.markdown("""
         cursor: pointer !important;
     }
 
-    /* Força a cor do texto do botão para preto */
     .stButton > button *, button[kind="secondary"] * {
         color: #111111 !important;
         font-weight: 900 !important;
     }
 
-    /* Efeito ao passar o mouse / clicar em qualquer um dos dois botões */
     .stButton > button:hover, button[kind="secondary"]:hover,
     .stButton > button:active, button[kind="secondary"]:active,
     .stButton > button:focus, button[kind="secondary"]:focus {
@@ -164,22 +153,18 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- HEADER VASTO COM LOGO OFICIAL ---
+# --- HEADER VASTO COM LOGO GRANDE ---
 logo_base64, logo_ext = get_image_base64()
 
 if logo_base64:
-    # Padroniza a extensão para o formato correto do HTML
     mime_ext = "jpeg" if logo_ext.lower() == "jpg" else logo_ext.lower()
-    html_logo = f'<img src="data:image/{mime_ext};base64,{logo_base64}" alt="Vasto Logo" style="height: 42px; object-fit: contain;">'
+    html_logo = f'<img src="data:image/{mime_ext};base64,{logo_base64}" alt="Vasto Logo" style="width: 100%; max-width: 420px; height: auto; object-fit: contain; display: block; margin: 0 auto;">'
 else:
-    html_logo = '<h1 style="margin: 0; font-size: 22px; font-weight: 900; color: #111; letter-spacing: 1px;">VASTO <span style="font-size: 10px; font-weight: 700; letter-spacing: 2px;">ACABAMENTOS</span></h1>'
+    html_logo = '<h1 style="margin: 0; font-size: 26px; font-weight: 900; color: #111; letter-spacing: 1px; text-align: center;">VASTO ACABAMENTOS</h1>'
 
 st.markdown(f"""
     <div class="vasto-header">
-        <div>
-            {html_logo}
-        </div>
-        <div class="badge"><span style="color: #10B981;">●</span> Online</div>
+        {html_logo}
     </div>
 """, unsafe_allow_html=True)
 
