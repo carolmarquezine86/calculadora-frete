@@ -202,7 +202,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- LÓGICA DE CÁLCULO ---
-ORIGEM_LAT, ORIGEM_LON = -23.550520, -46.633308
+ORIGEM_LAT, ORIGEM_LON = -23.7816545, -46.7241884  # Coordenadas exatas da Rua Paulino Nunes Esposo, 120 (Jardim Marcelo)
 
 def calcular_frete(peso_kg, tipo_frete, distancia_km):
     is_especial = (tipo_frete == "Especial")
@@ -233,7 +233,8 @@ def obter_distancia(cep_destino, numero_casa):
     try:
         cep = cep_destino.replace("-", "").replace(".", "").strip()
         resp_cep = requests.get(f"https://viacep.com.br/ws/{cep}/json/").json()
-        if "erro" in resp_cep: return None, "CEP não encontrado."
+        if "erro" in resp_cep: 
+            return None, "CEP não encontrado."
         
         logradouro = resp_cep.get('logradouro', '')
         bairro = resp_cep.get('bairro', '')
@@ -242,24 +243,30 @@ def obter_distancia(cep_destino, numero_casa):
         
         num_str = f", {numero_casa}" if numero_casa else ""
         
+        # Consultas ordenadas da mais específica para a mais segura dentro de SP
         queries = [
-            f"CEP {cep}, {cidade}, {uf}, Brasil",
-            f"{logradouro}{num_str}, {cidade}, {uf}, Brasil",
-            f"{cep}, Brasil"
+            f"{logradouro}{num_str}, {bairro}, {cidade} - {uf}, Brasil",
+            f"CEP {cep}, {cidade} - {uf}, Brasil",
+            f"{logradouro}{num_str}, {cidade} - {uf}, Brasil"
         ]
         
         geo = []
         for q in queries:
-            url_geo = f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(q)}"
-            resp = requests.get(url_geo, headers={'User-Agent': 'VastoApp'}).json()
+            url_geo = f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(q)}&countrycodes=br&limit=1"
+            resp = requests.get(url_geo, headers={'User-Agent': 'VastoApp-Frete'}).json()
             if resp:
                 geo = resp
                 break
 
-        if not geo: return None, "Não foi possível localizar este endereço no mapa. Verifique o CEP."
+        if not geo: 
+            return None, "Não foi possível localizar este endereço no mapa. Verifique o CEP."
 
-        url = f"http://router.project-osrm.org/route/v1/driving/{ORIGEM_LON},{ORIGEM_LAT};{geo[0]['lon']},{geo[0]['lat']}?overview=false"
-        rota_resp = requests.get(url).json()
+        destino_lat = float(geo[0]['lat'])
+        destino_lon = float(geo[0]['lon'])
+
+        # Consulta OSRM para traçar a rota real por carro
+        url = f"http://router.project-osrm.org/route/v1/driving/{ORIGEM_LON},{ORIGEM_LAT};{destino_lon},{destino_lat}?overview=false"
+        rota_resp = requests.get(url, headers={'User-Agent': 'VastoApp-Frete'}).json()
         
         if 'routes' not in rota_resp or len(rota_resp['routes']) == 0:
             return None, "Erro ao calcular a rota de tráfego."
@@ -271,15 +278,15 @@ def obter_distancia(cep_destino, numero_casa):
     except Exception as e:
         return None, "Erro ao processar a rota automática."
 
-# --- FORMULÁRIO ---
+# --- FORMULÁRIO COM CHAVES PARA CONTROLE DO ESTADO ---
 col_cep, col_num = st.columns([2, 1])
 with col_cep:
-    cep = st.text_input("CEP de Destino", placeholder="Ex: 04312-040")
+    cep = st.text_input("CEP de Destino", placeholder="Ex: 04312-040", key="input_cep")
 with col_num:
-    numero = st.text_input("Número", placeholder="Ex: 551")
+    numero = st.text_input("Número", placeholder="Ex: 551", key="input_numero")
 
-peso = st.number_input("Peso total da carga (kg)", min_value=1.0, value=500.0, step=10.0)
-tipo_frete_escolhido = st.radio("Tipo de Frete", ["Tradicional", "Especial"])
+peso = st.number_input("Peso total da carga (kg)", min_value=1.0, value=500.0, step=10.0, key="input_peso")
+tipo_frete_escolhido = st.radio("Tipo de Frete", ["Tradicional", "Especial"], key="input_tipo")
 
 st.write("")
 
@@ -291,6 +298,8 @@ with col2:
     btn_calcular = st.button("🖩 Calcular Frete")
 
 if btn_limpar:
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
     st.rerun()
 
 # --- EXIBIÇÃO DO RESULTADO ---
