@@ -201,20 +201,6 @@ st.markdown("""
         color: #111;
     }
 
-    /* BARRA INFERIOR DE BOTÕES FIXOS */
-    .bottom-bar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: #111111;
-        padding: 15px 20px;
-        z-index: 999;
-        display: flex;
-        gap: 12px;
-        justify-content: center;
-    }
-    
     /* AJUSTE DOS BOTÕES STREAMLIT */
     .stButton > button {
         border-radius: 10px !important;
@@ -403,7 +389,7 @@ if manual:
 
 st.markdown("</div>", unsafe_allow_html=True) # Fim Step 2
 
-# --- BARRA DE BOTÕES INFERIOR ---
+# --- BARRA DE BOTÕES ---
 col_btn1, col_btn2 = st.columns([1, 1.5])
 with col_btn1:
     btn_limpar = st.button("↺ Limpar")
@@ -418,6 +404,11 @@ if btn_calcular:
     dist = distancia_manual if manual else calcular_distancia(rua, cidade_val, uf_val)
     res = calcular_frete(peso, escada, dist)
     
+    # Formatação das moedas para o formato brasileiro
+    v_base_str = f"{res['base']:.2f}".replace('.', ',')
+    v_adic_str = f"{res['adicional']:.2f}".replace('.', ',')
+    v_tot_str  = f"{res['total']:.2f}".replace('.', ',')
+
     st.markdown(f"""
         <div class="result-card">
             <div class="sub-title" style="color: #9CA3AF;">RESULTADO DO ORÇAMENTO</div>
@@ -443,16 +434,16 @@ if btn_calcular:
             
             <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px;">
                 <span style="color: #9CA3AF;">Valor-base por peso</span>
-                <span style="font-weight: 700;">R$ {res['base']:.2f}".replace('.', ',')}</span>
+                <span style="font-weight: 700;">R$ {v_base_str}</span>
             </div>
             <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 15px;">
                 <span style="color: #9CA3AF;">Adicional de distância</span>
-                <span style="font-weight: 700;">R$ {res['adicional']:.2f}".replace('.', ',')}</span>
+                <span style="font-weight: 700;">R$ {v_adic_str}</span>
             </div>
 
             <div class="result-total-box">
                 <label>VALOR TOTAL DO FRETE</label>
-                <h1>R$ {res['total']:.2f}".replace('.', ',')}</h1>
+                <h1>R$ {v_tot_str}</h1>
             </div>
             
             <p style="color: #9CA3AF; font-size: 11px; margin-top: 12px; margin-bottom: 0;">
