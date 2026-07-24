@@ -242,16 +242,17 @@ def obter_distancia(cep_destino, numero_casa):
         
         num_str = f", {numero_casa}" if numero_casa else ""
         
+        # Consultas estruturadas fixando São Paulo/SP na string de busca para evitar homônimos fora do estado
         query1 = f"{logradouro}{num_str}, {bairro}, {cidade}, {uf}, Brasil"
-        geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={query1}&city={cidade}&state={uf}&country=Brazil", headers={'User-Agent': 'VastoApp'}).json()
+        geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(query1)}", headers={'User-Agent': 'VastoApp'}).json()
         
         if not geo:
             query2 = f"{logradouro}{num_str}, {cidade}, {uf}, Brasil"
-            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={query2}&city={cidade}&state={uf}&country=Brazil", headers={'User-Agent': 'VastoApp'}).json()
+            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(query2)}", headers={'User-Agent': 'VastoApp'}).json()
 
         if not geo:
             query3 = f"CEP {cep}, {cidade}, {uf}, Brasil"
-            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={query3}&city={cidade}&state={uf}&country=Brazil", headers={'User-Agent': 'VastoApp'}).json()
+            geo = requests.get(f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(query3)}", headers={'User-Agent': 'VastoApp'}).json()
 
         if not geo: return None, "Não foi possível localizar este endereço no mapa. Verifique o CEP."
 
