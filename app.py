@@ -52,7 +52,7 @@ st.markdown(f"""
     </script>
 """, unsafe_allow_html=True)
 
-# --- CSS LIMPO E AJUSTADO (SEM RUÍDOS E FONTES CORRIGIDAS) ---
+# --- CSS CORRIGIDO E AJUSTADO (RESTAURANDO TAMANHOS IDEAIS) ---
 st.markdown("""
     <style>
     :root {
@@ -521,9 +521,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Renderização segura da logo com fallback em texto limpo (sem sobras de tags)
+# Renderização segura da logo com fallback em texto limpo
 if logo_b64:
-    logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="brand-logo" alt="Vasto Logo">'
+    mime = "jpeg" if logo_ext.lower() == "jpg" else logo_ext.lower()
+    logo_html = f'<img src="data:image/{mime};base64,{logo_b64}" class="brand-logo" alt="Vasto Logo">'
 else:
     logo_html = '<strong style="font-size:1.05rem; letter-spacing:0.04em; color:#111;">VASTO ACABAMENTOS</strong>'
 
