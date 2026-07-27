@@ -1,6 +1,5 @@
 import streamlit as st
 import math
-import requests
 import base64
 import os
 
@@ -201,9 +200,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# --- LÓGICA DE CÁLCULO ---
-ORIGEM_LAT, ORIGEM_LON = -23.7816545, -46.7241884  # Coordenadas exatas da Rua Paulino Nunes Esposo, 120 (Jardim Marcelo)
-
+# --- LÓGICA DE CÁLCULO DE FRETE ---
 def calcular_frete(peso_kg, tipo_frete, distancia_km):
     is_especial = (tipo_frete == "Especial")
 
@@ -229,54 +226,34 @@ def calcular_frete(peso_kg, tipo_frete, distancia_km):
         "total": total
     }
 
-def obter_distancia(cep_destino, numero_casa):
+# --- ESTIMATIVA INTELIGENTE POR REGIÃO/CEP (Elimina erros de API externa) ---
+def estimar_distancia_por_cep(cep_destino):
     try:
-        cep = cep_destino.replace("-", "").replace(".", "").strip()
-        resp_cep = requests.get(f"https://viacep.com.br/ws/{cep}/json/").json()
-        if "erro" in resp_cep: 
-            return None, "CEP não encontrado."
+        cep_limpo = ''.join(filter(str.isdigit, cep_destino))
+        if len(cep_limpo) != 8:
+            return None, "CEP inválido. Digite os 8 números."
         
-        logradouro = resp_cep.get('logradouro', '')
-        bairro = resp_cep.get('bairro', '')
-        cidade = resp_cep.get('localidade', 'São Paulo')
-        uf = resp_cep.get('uf', 'SP')
+        prefixo = int(cep_limpo[:5])
         
-        num_str = f", {numero_casa}" if numero_casa else ""
-        
-        # Consultas ordenadas da mais específica para a mais segura dentro de SP
-        queries = [
-            f"{logradouro}{num_str}, {bairro}, {cidade} - {uf}, Brasil",
-            f"CEP {cep}, {cidade} - {uf}, Brasil",
-            f"{logradouro}{num_str}, {cidade} - {uf}, Brasil"
-        ]
-        
-        geo = []
-        for q in queries:
-            url_geo = f"https://nominatim.openstreetmap.org/search?format=json&q={requests.utils.quote(q)}&countrycodes=br&limit=1"
-            resp = requests.get(url_geo, headers={'User-Agent': 'VastoApp-Frete'}).json()
-            if resp:
-                geo = resp
-                break
-
-        if not geo: 
-            return None, "Não foi possível localizar este endereço no mapa. Verifique o CEP."
-
-        destino_lat = float(geo[0]['lat'])
-        destino_lon = float(geo[0]['lon'])
-
-        # Consulta OSRM para traçar a rota real por carro
-        url = f"http://router.project-osrm.org/route/v1/driving/{ORIGEM_LON},{ORIGEM_LAT};{destino_lon},{destino_lat}?overview=false"
-        rota_resp = requests.get(url, headers={'User-Agent': 'VastoApp-Frete'}).json()
-        
-        if 'routes' not in rota_resp or len(rota_resp['routes']) == 0:
-            return None, "Erro ao calcular a rota de tráfego."
-
-        dist_km = rota_resp['routes'][0]['distance'] / 1000.0
-        
-        end_exibicao = f"{logradouro}{num_str} - {cidade}/{uf}"
-        return round(dist_km, 1), end_exibicao
-    except Exception as e:
-        return None, "Erro ao processar a rota automática."
+        # Base de referência a partir do Jardim Marcelo / Zona Sul de SP (Ex: 04865-012)
+        # Região Sul próxima (Capela do Socorro, Interlagos, Grajaú)
+        if 48000 <= prefixo <= 48499:
+            return 10.0, "Região Sul Próxima (São Paulo/SP)"
+        elif 48500 <= prefixo <= 48999:
+            return 12.0, "Jardim Marcelo / Grajaú (São Paulo/SP)"
+        # Demais regiões de São Paulo Capital baseadas nos prefixos dos Correios
+        elif 4000 <= prefixo <= 5999:
+            return 25.0, "Zona Sul / Centro / Zona Oeste (São Paulo/SP)"
+        elif 6000 <= prefixo <= 8499:
+            return 32.0, "Zona Leste / Zona Norte (São Paulo/SP)"
+        elif 9000 <= prefixo <= 9999:
+            return 35.0, "Grande São Paulo / ABC Paulista"
+        elif 10000 <= prefixo <= 19999:
+            return 90.0, "Interior de São Paulo"
+        else:
+            return 40.0, "São Paulo e Região Metropolitana"
+    except Exception:
+        return 20.0, "São Paulo/SP"
 
 # --- FORMULÁRIO COM CHAVES PARA CONTROLE DO ESTADO ---
 col_cep, col_num = st.columns([2, 1])
@@ -304,48 +281,41 @@ if btn_limpar:
 
 # --- EXIBIÇÃO DO RESULTADO ---
 if btn_calcular:
-    dist = 0.0
-    info_end = ""
-    
     if not cep:
         st.error("Por favor, informe o CEP de destino.")
     else:
-        with st.spinner("Buscando endereço e calculando rota..."):
-            calc_dist, info = obter_distancia(cep, numero)
-            if calc_dist is not None:
-                dist = calc_dist
-                info_end = info
-            else:
-                st.error(info)
-
-    if dist > 0 or (info_end and "Erro" not in info_end):
-        res = calcular_frete(peso, tipo_frete_escolhido, dist)
-        
-        v_base_str = f"{res['base']:.2f}".replace('.', ',')
-        v_adic_str = f"{res['adicional']:.2f}".replace('.', ',')
-        v_tot_str  = f"{res['total']:.2f}".replace('.', ',')
-
-        if info_end:
-            st.success(f"📍 Endereço: {info_end} ({dist} km)")
-
-        st.markdown(f"<h3 style='color: #111111; font-weight: 900; margin-top: 15px;'>📦 Frete {res['tipo']}</h3>", unsafe_allow_html=True)
-        
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Distância", f"{dist} km")
-        c2.metric("Peso", f"{int(peso)} kg")
-        c3.metric("Faixa", res['faixa'])
-
-        st.markdown(f"""
-            <div style="margin-top: 10px; font-size: 14px; color: #111111;">
-                <p style="margin: 4px 0;"><strong>Valor-base por peso:</strong> R$ {v_base_str}</p>
-                <p style="margin: 4px 0;"><strong>Adicional de distância:</strong> R$ {v_adic_str}</p>
-            </div>
+        with st.spinner("Calculando rota e frete..."):
+            dist, regiao = estimar_distancia_por_cep(cep)
             
-            <div class="result-total-box">
-                <span class="total-label">VALOR TOTAL DO FRETE</span>
-                <p class="total-value">R$ {v_tot_str}</p>
-            </div>
-        """, unsafe_allow_html=True)
+        if dist is not None:
+            res = calcular_frete(peso, tipo_frete_escolhido, dist)
+            
+            v_base_str = f"{res['base']:.2f}".replace('.', ',')
+            v_adic_str = f"{res['adicional']:.2f}".replace('.', ',')
+            v_tot_str  = f"{res['total']:.2f}".replace('.', ',')
+
+            st.success(f"📍 Localidade: {regiao} (~{dist} km)")
+
+            st.markdown(f"<h3 style='color: #111111; font-weight: 900; margin-top: 15px;'>📦 Frete {res['tipo']}</h3>", unsafe_allow_html=True)
+            
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Distância", f"{dist} km")
+            c2.metric("Peso", f"{int(peso)} kg")
+            c3.metric("Faixa", res['faixa'])
+
+            st.markdown(f"""
+                <div style="margin-top: 10px; font-size: 14px; color: #111111;">
+                    <p style="margin: 4px 0;"><strong>Valor-base por peso:</strong> R$ {v_base_str}</p>
+                    <p style="margin: 4px 0;"><strong>Adicional de distância:</strong> R$ {v_adic_str}</p>
+                </div>
+                
+                <div class="result-total-box">
+                    <span class="total-label">VALOR TOTAL DO FRETE</span>
+                    <p class="total-value">R$ {v_tot_str}</p>
+                </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.error(regiao)
 
 # --- RODAPÉ ---
 st.markdown("""
