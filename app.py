@@ -52,7 +52,7 @@ st.markdown(f"""
     </script>
 """, unsafe_allow_html=True)
 
-# --- CSS REVISADO E OTIMIZADO ---
+# --- CSS LIMPO E AJUSTADO (SEM RUÍDOS E FONTES CORRIGIDAS) ---
 st.markdown("""
     <style>
     :root {
@@ -71,29 +71,20 @@ st.markdown("""
       box-sizing: border-box;
     }
 
+    html, body, [class*="st-"] {
+      font-family: "Nunito Sans", "Segoe UI", Arial, sans-serif !important;
+      color: var(--ink);
+    }
+
     html {
       background: var(--canvas);
     }
 
     body {
       margin: 0;
-      color: var(--ink);
       background:
         radial-gradient(circle at 90% 3%, rgba(253, 202, 23, 0.15), transparent 22rem),
         var(--canvas);
-      font-family: "Nunito Sans", "Segoe UI", Arial, sans-serif;
-    }
-
-    button,
-    input,
-    select {
-      font: inherit;
-    }
-
-    button,
-    select,
-    input[type="checkbox"] {
-      cursor: pointer;
     }
 
     .topbar {
@@ -105,7 +96,7 @@ st.markdown("""
     .topbar-inner,
     .hero,
     .calculator-grid,
-    footer {
+    .app-footer {
       width: min(1180px, calc(100% - 40px));
       margin: 0 auto;
     }
@@ -162,15 +153,15 @@ st.markdown("""
     .hero h1 {
       max-width: 670px;
       margin: 0;
-      font-size: clamp(1.8rem, 3.8vw, 3rem);
-      line-height: 1.1;
-      letter-spacing: -0.04em;
+      font-size: clamp(1.8rem, 3.8vw, 2.8rem);
+      line-height: 1.15;
+      letter-spacing: -0.03em;
     }
 
     .hero-copy {
       max-width: 610px;
       margin: 12px 0 0;
-      font-size: 0.98rem;
+      font-size: 0.96rem;
       line-height: 1.5;
       color: var(--muted);
     }
@@ -276,7 +267,7 @@ st.markdown("""
     .empty-result h2,
     .quote-result h2 {
       margin: 0;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       letter-spacing: -0.02em;
     }
 
@@ -382,7 +373,7 @@ st.markdown("""
 
     .quote-result h2 {
       margin-top: 4px;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       text-transform: capitalize;
       color: white;
     }
@@ -514,7 +505,7 @@ st.markdown("""
       font-size: 0.65rem;
     }
 
-    footer {
+    .app-footer {
       display: flex;
       justify-content: space-between;
       padding: 20px 0 32px;
@@ -530,8 +521,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Renderização segura da logo sem códigos sobrando
-logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="brand-logo" alt="Vasto Logo">' if logo_b64 else '<strong style="font-size:1.1rem; letter-spacing:0.05em;">VASTO ACABAMENTOS</strong>'
+# Renderização segura da logo com fallback em texto limpo (sem sobras de tags)
+if logo_b64:
+    logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="brand-logo" alt="Vasto Logo">'
+else:
+    logo_html = '<strong style="font-size:1.05rem; letter-spacing:0.04em; color:#111;">VASTO ACABAMENTOS</strong>'
 
 # --- TOPBAR ---
 st.markdown(f"""
@@ -734,8 +728,8 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # --- RODAPÉ ---
 st.markdown("""
-    <footer>
+    <div class="app-footer">
         <span>Vasto Acabamentos — Todos os direitos reservados.</span>
         <span>Desenvolvido por Carol Marquezine</span>
-    </footer>
+    </div>
 """, unsafe_allow_html=True)
