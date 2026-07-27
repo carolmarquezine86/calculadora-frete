@@ -52,7 +52,7 @@ st.markdown(f"""
     </script>
 """, unsafe_allow_html=True)
 
-# --- SEU CSS COMPLETO E ORIGINAL ---
+# --- CSS REVISADO E OTIMIZADO ---
 st.markdown("""
     <style>
     :root {
@@ -96,10 +96,6 @@ st.markdown("""
       cursor: pointer;
     }
 
-    .app-shell {
-      min-height: 100vh;
-    }
-
     .topbar {
       border-bottom: 1px solid #e7e7e4;
       background: rgba(255, 255, 255, 0.92);
@@ -134,24 +130,16 @@ st.markdown("""
       border-left: 1px solid var(--line);
     }
 
-    .tool-name span,
-    .origin-card small,
-    .field small,
-    .quote-result small,
-    .empty-result p,
-    .hero-copy,
-    .card-heading p {
-      color: var(--muted);
-    }
-
     .tool-name span {
       font-size: 0.72rem;
       letter-spacing: 0.09em;
       text-transform: uppercase;
+      color: var(--muted);
     }
 
     .tool-name strong {
       font-size: 0.96rem;
+      color: var(--ink);
     }
 
     .hero {
@@ -159,7 +147,7 @@ st.markdown("""
       justify-content: space-between;
       align-items: end;
       gap: 48px;
-      padding: 54px 0 36px;
+      padding: 40px 0 28px;
     }
 
     .eyebrow {
@@ -174,16 +162,17 @@ st.markdown("""
     .hero h1 {
       max-width: 670px;
       margin: 0;
-      font-size: clamp(2rem, 4.4vw, 3.55rem);
-      line-height: 1.02;
-      letter-spacing: -0.055em;
+      font-size: clamp(1.8rem, 3.8vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: -0.04em;
     }
 
     .hero-copy {
       max-width: 610px;
-      margin: 16px 0 0;
-      font-size: 1.02rem;
-      line-height: 1.65;
+      margin: 12px 0 0;
+      font-size: 0.98rem;
+      line-height: 1.5;
+      color: var(--muted);
     }
 
     .origin-card {
@@ -191,7 +180,7 @@ st.markdown("""
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 17px 19px;
+      padding: 16px 18px;
       border: 1px solid #e0dfd7;
       border-radius: 16px;
       background: rgba(255, 255, 255, 0.72);
@@ -217,18 +206,19 @@ st.markdown("""
 
     .origin-card small {
       margin-bottom: 2px;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       text-transform: uppercase;
       letter-spacing: 0.07em;
+      color: var(--muted);
     }
 
     .origin-card strong {
-      font-size: 0.88rem;
+      font-size: 0.85rem;
     }
 
     .origin-card div span {
       color: #7c7c7c;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
     }
 
     .calculator-grid {
@@ -245,11 +235,11 @@ st.markdown("""
 
     .form-card,
     .result-card {
-      padding: clamp(26px, 4vw, 46px);
+      padding: clamp(24px, 3.5vw, 40px);
     }
 
     .result-card {
-      min-height: 665px;
+      min-height: 620px;
       display: flex;
       flex-direction: column;
       border-left: 1px solid var(--line);
@@ -267,17 +257,17 @@ st.markdown("""
       display: flex;
       gap: 15px;
       align-items: flex-start;
-      margin-bottom: 31px;
+      margin-bottom: 24px;
     }
 
     .step {
       display: inline-flex;
       justify-content: center;
-      min-width: 38px;
-      padding-top: 5px;
+      min-width: 32px;
+      padding-top: 4px;
       border-top: 3px solid var(--yellow);
       color: #787878;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 800;
       letter-spacing: 0.08em;
     }
@@ -286,38 +276,14 @@ st.markdown("""
     .empty-result h2,
     .quote-result h2 {
       margin: 0;
-      font-size: 1.36rem;
-      letter-spacing: -0.025em;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
     }
 
     .card-heading p {
-      margin: 5px 0 0;
-      font-size: 0.88rem;
-    }
-
-    .field {
-      display: block;
-      margin-bottom: 22px;
-    }
-
-    .field > span {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 0.82rem;
-      font-weight: 800;
-      color: var(--ink);
-    }
-
-    .field small {
-      display: block;
-      margin-top: 7px;
-      font-size: 0.72rem;
-    }
-
-    .two-columns {
-      display: grid;
-      grid-template-columns: 0.72fr 1.28fr;
-      gap: 15px;
+      margin: 4px 0 0;
+      font-size: 0.84rem;
+      color: var(--muted);
     }
 
     .empty-result {
@@ -327,32 +293,33 @@ st.markdown("""
     }
 
     .empty-result .step {
-      margin: 30px auto 18px;
+      margin: 20px auto 14px;
     }
 
     .empty-result h2 {
-      max-width: 320px;
+      max-width: 300px;
       margin: 0 auto;
       color: #111;
     }
 
     .empty-result p {
-      max-width: 330px;
-      margin: 11px auto 28px;
-      font-size: 0.86rem;
-      line-height: 1.6;
+      max-width: 310px;
+      margin: 10px auto 24px;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: var(--muted);
     }
 
     .route-visual {
       position: relative;
-      width: min(290px, 80%);
-      height: 85px;
+      width: min(280px, 80%);
+      height: 75px;
       margin: 0 auto;
     }
 
     .route-line {
       position: absolute;
-      inset: 38px 35px auto;
+      inset: 34px 30px auto;
       height: 3px;
       background: repeating-linear-gradient(
         90deg,
@@ -364,7 +331,7 @@ st.markdown("""
 
     .route-point {
       position: absolute;
-      top: 35px;
+      top: 30px;
       z-index: 1;
       width: 12px;
       height: 12px;
@@ -375,14 +342,14 @@ st.markdown("""
     }
 
     .route-point.start {
-      left: 23px;
+      left: 20px;
     }
 
     .route-point.end {
-      right: 18px;
-      top: 12px;
-      width: 47px;
-      height: 47px;
+      right: 15px;
+      top: 10px;
+      width: 42px;
+      height: 42px;
       display: grid;
       place-items: center;
       border: 0;
@@ -401,31 +368,31 @@ st.markdown("""
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 20px;
-      padding-bottom: 24px;
+      gap: 16px;
+      padding-bottom: 20px;
       border-bottom: 1px solid #343434;
     }
 
     .quote-topline small {
       color: #a5a5a5;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
     .quote-result h2 {
-      margin-top: 5px;
-      font-size: 1.55rem;
+      margin-top: 4px;
+      font-size: 1.4rem;
       text-transform: capitalize;
       color: white;
     }
 
     .type-badge {
-      padding: 7px 11px;
+      padding: 6px 10px;
       border-radius: 999px;
       color: #111;
       background: var(--yellow);
-      font-size: 0.69rem;
+      font-size: 0.65rem;
       font-weight: 900;
     }
 
@@ -438,16 +405,16 @@ st.markdown("""
       display: flex;
       gap: 12px;
       align-items: flex-start;
-      margin: 25px 0;
-      padding: 15px;
+      margin: 20px 0;
+      padding: 14px;
       border: 1px solid #383838;
-      border-radius: 11px;
+      border-radius: 10px;
       background: #222;
     }
 
     .destination-box > span {
       color: var(--yellow);
-      font-size: 1.3rem;
+      font-size: 1.2rem;
     }
 
     .destination-box div {
@@ -458,15 +425,15 @@ st.markdown("""
 
     .destination-box small {
       color: #999;
-      font-size: 0.66rem;
+      font-size: 0.64rem;
       text-transform: uppercase;
       letter-spacing: 0.07em;
     }
 
     .destination-box strong {
-      margin-top: 4px;
-      font-size: 0.76rem;
-      line-height: 1.4;
+      margin-top: 3px;
+      font-size: 0.74rem;
+      line-height: 1.35;
       color: white;
     }
 
@@ -474,40 +441,40 @@ st.markdown("""
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .metric-row div {
-      padding: 13px 0;
+      padding: 10px 0;
       border-bottom: 1px solid #3d3d3d;
     }
 
     .metric-row small {
       display: block;
       color: #999;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
     }
 
     .metric-row strong {
       display: block;
-      margin-top: 3px;
-      font-size: 1.06rem;
+      margin-top: 2px;
+      font-size: 1rem;
       color: white;
     }
 
     .price-breakdown {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-bottom: 24px;
+      gap: 10px;
+      margin-bottom: 20px;
     }
 
     .price-breakdown div {
       display: flex;
       justify-content: space-between;
-      gap: 20px;
+      gap: 16px;
       color: #c1c1c1;
-      font-size: 0.77rem;
+      font-size: 0.75rem;
     }
 
     .price-breakdown strong {
@@ -516,8 +483,8 @@ st.markdown("""
 
     .total-box {
       margin-top: auto;
-      padding: 22px;
-      border-radius: 14px;
+      padding: 18px;
+      border-radius: 12px;
       color: #111;
       background: var(--yellow);
     }
@@ -530,29 +497,29 @@ st.markdown("""
 
     .total-box small {
       color: #5f4c00;
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 800;
       text-transform: uppercase;
     }
 
     .total-box strong {
-      margin: 5px 0;
-      font-size: clamp(2rem, 5vw, 3rem);
+      margin: 4px 0;
+      font-size: clamp(1.8rem, 4.5vw, 2.6rem);
       line-height: 1;
-      letter-spacing: -0.05em;
+      letter-spacing: -0.04em;
     }
 
     .total-box span {
       color: #5f4c00;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
     }
 
     footer {
       display: flex;
       justify-content: space-between;
-      padding: 24px 0 42px;
+      padding: 20px 0 32px;
       color: #777;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
     }
 
     header { visibility: hidden !important; display: none !important; }
@@ -563,7 +530,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="brand-logo" alt="Vasto Logo">' if logo_b64 else '<strong>VASTO ACABAMENTOS</strong>'
+# Renderização segura da logo sem códigos sobrando
+logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="brand-logo" alt="Vasto Logo">' if logo_b64 else '<strong style="font-size:1.1rem; letter-spacing:0.05em;">VASTO ACABAMENTOS</strong>'
 
 # --- TOPBAR ---
 st.markdown(f"""
