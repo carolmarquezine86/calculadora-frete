@@ -52,7 +52,7 @@ st.markdown(f"""
     </script>
 """, unsafe_allow_html=True)
 
-# --- CSS CORRIGIDO E AJUSTADO (COM FONTE MAIOR NO FORMULÁRIO) ---
+# --- CSS CORRIGIDO E AJUSTADO ---
 st.markdown("""
     <style>
     :root {
@@ -510,7 +510,6 @@ st.markdown("""
       font-size: 0.78rem;
     }
 
-    /* Aumento de fonte para labels e inputs do formulário */
     label, .stTextInput label, .stNumberInput label, .stRadio label {
       font-size: 0.95rem !important;
       color: #e0e0e0 !important;
@@ -534,9 +533,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Renderização segura da logo com fallback em texto limpo
 if logo_b64:
-    mime = "jpeg" if logo_ext.lower() == "jpg" else icon_ext.lower()
+    mime = "jpeg" if icon_ext.lower() == "jpg" else icon_ext.lower()
     logo_html = f'<img src="data:image/{mime};base64,{logo_b64}" class="brand-logo" alt="Vasto Logo">'
 else:
     logo_html = '<strong style="font-size:1.15rem; letter-spacing:0.04em; color:#fff;">VASTO ACABAMENTOS</strong>'
