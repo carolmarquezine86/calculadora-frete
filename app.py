@@ -52,7 +52,7 @@ st.markdown(f"""
     </script>
 """, unsafe_allow_html=True)
 
-# --- CSS CORRIGIDO COM CONTRASTE PERFEITO (TEXTOS CLAROS E LEGÍVEIS) ---
+# --- CSS CORRIGIDO E AJUSTADO (COM FONTE MAIOR NO FORMULÁRIO) ---
 st.markdown("""
     <style>
     :root {
@@ -118,14 +118,14 @@ st.markdown("""
     }
 
     .tool-name span {
-      font-size: 0.72rem;
+      font-size: 0.78rem;
       letter-spacing: 0.09em;
       text-transform: uppercase;
       color: #999;
     }
 
     .tool-name strong {
-      font-size: 0.96rem;
+      font-size: 1.05rem;
       color: #fff;
     }
 
@@ -140,7 +140,7 @@ st.markdown("""
     .eyebrow {
       margin: 0 0 10px;
       color: var(--yellow);
-      font-size: 0.76rem;
+      font-size: 0.85rem;
       font-weight: 800;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -149,7 +149,7 @@ st.markdown("""
     .hero h1 {
       max-width: 670px;
       margin: 0;
-      font-size: clamp(1.8rem, 3.8vw, 2.8rem);
+      font-size: clamp(2rem, 4.2vw, 3.1rem);
       line-height: 1.15;
       letter-spacing: -0.03em;
       color: #ffffff;
@@ -157,10 +157,10 @@ st.markdown("""
 
     .hero-copy {
       max-width: 610px;
-      margin: 12px 0 0;
-      font-size: 0.96rem;
+      margin: 14px 0 0;
+      font-size: 1.08rem;
       line-height: 1.5;
-      color: #cccccc;
+      color: #d0d0d0;
     }
 
     .origin-card {
@@ -168,7 +168,7 @@ st.markdown("""
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 16px 18px;
+      padding: 18px 20px;
       border: 1px solid #333;
       border-radius: 16px;
       background: #1a1a1a;
@@ -183,7 +183,7 @@ st.markdown("""
       border-radius: 50%;
       color: var(--yellow);
       background: #2a2500;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
     }
 
     .origin-card div {
@@ -194,20 +194,20 @@ st.markdown("""
 
     .origin-card small {
       margin-bottom: 2px;
-      font-size: 0.68rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.07em;
       color: #999;
     }
 
     .origin-card strong {
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       color: #ffffff;
     }
 
     .origin-card div span {
       color: #b0b0b0;
-      font-size: 0.75rem;
+      font-size: 0.82rem;
     }
 
     .calculator-grid {
@@ -254,7 +254,7 @@ st.markdown("""
       padding-top: 4px;
       border-top: 3px solid var(--yellow);
       color: #aaaaaa;
-      font-size: 0.7rem;
+      font-size: 0.78rem;
       font-weight: 800;
       letter-spacing: 0.08em;
     }
@@ -263,15 +263,15 @@ st.markdown("""
     .empty-result h2,
     .quote-result h2 {
       margin: 0;
-      font-size: 1.2rem;
+      font-size: 1.35rem;
       letter-spacing: -0.02em;
       color: #ffffff;
     }
 
     .card-heading p {
-      margin: 4px 0 0;
-      font-size: 0.84rem;
-      color: #b0b0b0;
+      margin: 6px 0 0;
+      font-size: 0.95rem;
+      color: #cccccc;
     }
 
     .empty-result {
@@ -292,10 +292,10 @@ st.markdown("""
 
     .empty-result p {
       max-width: 310px;
-      margin: 10px auto 24px;
-      font-size: 0.84rem;
+      margin: 12px auto 24px;
+      font-size: 0.95rem;
       line-height: 1.5;
-      color: #b0b0b0;
+      color: #cccccc;
     }
 
     .route-visual {
@@ -362,24 +362,24 @@ st.markdown("""
 
     .quote-topline small {
       color: #aaaaaa;
-      font-size: 0.65rem;
+      font-size: 0.72rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
     .quote-result h2 {
       margin-top: 4px;
-      font-size: 1.35rem;
+      font-size: 1.5rem;
       text-transform: capitalize;
       color: white;
     }
 
     .type-badge {
-      padding: 6px 10px;
+      padding: 6px 12px;
       border-radius: 999px;
       color: #111;
       background: var(--yellow);
-      font-size: 0.65rem;
+      font-size: 0.72rem;
       font-weight: 900;
     }
 
@@ -393,7 +393,7 @@ st.markdown("""
       gap: 12px;
       align-items: flex-start;
       margin: 20px 0;
-      padding: 14px;
+      padding: 16px;
       border: 1px solid #333;
       border-radius: 10px;
       background: #1a1a1a;
@@ -401,7 +401,7 @@ st.markdown("""
 
     .destination-box > span {
       color: var(--yellow);
-      font-size: 1.2rem;
+      font-size: 1.3rem;
     }
 
     .destination-box div {
@@ -412,15 +412,15 @@ st.markdown("""
 
     .destination-box small {
       color: #aaaaaa;
-      font-size: 0.64rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.07em;
     }
 
     .destination-box strong {
-      margin-top: 3px;
-      font-size: 0.74rem;
-      line-height: 1.35;
+      margin-top: 4px;
+      font-size: 0.82rem;
+      line-height: 1.4;
       color: white;
     }
 
@@ -439,20 +439,20 @@ st.markdown("""
     .metric-row small {
       display: block;
       color: #aaaaaa;
-      font-size: 0.65rem;
+      font-size: 0.72rem;
     }
 
     .metric-row strong {
       display: block;
-      margin-top: 2px;
-      font-size: 1rem;
+      margin-top: 3px;
+      font-size: 1.1rem;
       color: white;
     }
 
     .price-breakdown {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 20px;
     }
 
@@ -461,7 +461,7 @@ st.markdown("""
       justify-content: space-between;
       gap: 16px;
       color: #cccccc;
-      font-size: 0.75rem;
+      font-size: 0.85rem;
     }
 
     .price-breakdown strong {
@@ -470,7 +470,7 @@ st.markdown("""
 
     .total-box {
       margin-top: auto;
-      padding: 18px;
+      padding: 20px;
       border-radius: 12px;
       color: #111;
       background: var(--yellow);
@@ -484,14 +484,14 @@ st.markdown("""
 
     .total-box small {
       color: #5f4c00;
-      font-size: 0.68rem;
+      font-size: 0.75rem;
       font-weight: 800;
       text-transform: uppercase;
     }
 
     .total-box strong {
       margin: 4px 0;
-      font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+      font-size: clamp(2rem, 4.8vw, 2.8rem);
       line-height: 1;
       letter-spacing: -0.04em;
       color: #111 !important;
@@ -499,7 +499,7 @@ st.markdown("""
 
     .total-box span {
       color: #5f4c00;
-      font-size: 0.65rem;
+      font-size: 0.72rem;
     }
 
     .app-footer {
@@ -507,11 +507,17 @@ st.markdown("""
       justify-content: space-between;
       padding: 20px 0 32px;
       color: #888;
-      font-size: 0.7rem;
+      font-size: 0.78rem;
     }
 
-    /* Ajustes para inputs do Streamlit no modo escuro */
+    /* Aumento de fonte para labels e inputs do formulário */
+    label, .stTextInput label, .stNumberInput label, .stRadio label {
+      font-size: 0.95rem !important;
+      color: #e0e0e0 !important;
+    }
+
     input, select, textarea {
+      font-size: 1rem !important;
       color: #ffffff !important;
     }
     
@@ -533,7 +539,7 @@ if logo_b64:
     mime = "jpeg" if logo_ext.lower() == "jpg" else icon_ext.lower()
     logo_html = f'<img src="data:image/{mime};base64,{logo_b64}" class="brand-logo" alt="Vasto Logo">'
 else:
-    logo_html = '<strong style="font-size:1.05rem; letter-spacing:0.04em; color:#fff;">VASTO ACABAMENTOS</strong>'
+    logo_html = '<strong style="font-size:1.15rem; letter-spacing:0.04em; color:#fff;">VASTO ACABAMENTOS</strong>'
 
 # --- TOPBAR ---
 st.markdown(f"""
