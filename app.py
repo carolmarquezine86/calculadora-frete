@@ -574,10 +574,6 @@ st.markdown(f"""
                 <span>Ferramenta Interna</span>
                 <strong>Calculadora de Frete & Logística</strong>
             </div>
-            <div style="margin-left: auto; display: flex; align-items: center; gap: 8px; padding: 9px 13px; border: 1px solid #dce9e1; border-radius: 999px; color: var(--green); background: #f1faf5; font-size: 0.78rem; font-weight: 700;">
-                <div style="width: 7px; height: 7px; border-radius: 50%; background: #20a05c; box-shadow: 0 0 0 4px rgba(32, 160, 92, 0.12);"></div>
-                <span>Sistema Operacional</span>
-            </div>
         </div>
     </div>
 """, unsafe_allow_html=True)
@@ -694,7 +690,6 @@ with col_form:
     st.markdown("</div>", unsafe_allow_html=True)
 
 with col_res:
-    # Se o botão calcular não foi acionado ou o CEP está vazio, exibe o card vazio original
     if not btn_calcular or not cep:
         st.markdown("""
             <div class="result-card">
@@ -719,7 +714,6 @@ with col_res:
             v_tot_str  = f"{res['total']:.2f}".replace('.', ',')
             badge_class = "especial" if tipo_frete_escolhido == "Especial" else ""
 
-            # Exibe o card com o resultado estilizado no tema escuro que você desenhou
             st.markdown(f"""
                 <div class="result-card has-result">
                     <div class="quote-result">
