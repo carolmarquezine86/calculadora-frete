@@ -52,19 +52,17 @@ st.markdown(f"""
     </script>
 """, unsafe_allow_html=True)
 
-# --- CSS CORRIGIDO E AJUSTADO (RESTAURANDO TAMANHOS IDEAIS) ---
+# --- CSS CORRIGIDO COM CONTRASTE PERFEITO (TEXTOS CLAROS E LEGÍVEIS) ---
 st.markdown("""
     <style>
     :root {
       --yellow: #fdca17;
       --yellow-soft: #fff8d8;
       --ink: #151515;
-      --muted: #686868;
-      --line: #dedede;
-      --surface: #ffffff;
-      --canvas: #f4f4f2;
-      --green: #197a45;
-      --red: #a13c2f;
+      --muted: #a0a0a0;
+      --line: #333333;
+      --surface: #1e1e1e;
+      --canvas: #121212;
     }
 
     * {
@@ -73,7 +71,7 @@ st.markdown("""
 
     html, body, [class*="st-"] {
       font-family: "Nunito Sans", "Segoe UI", Arial, sans-serif !important;
-      color: var(--ink);
+      color: #f0f0f0 !important;
     }
 
     html {
@@ -82,14 +80,12 @@ st.markdown("""
 
     body {
       margin: 0;
-      background:
-        radial-gradient(circle at 90% 3%, rgba(253, 202, 23, 0.15), transparent 22rem),
-        var(--canvas);
+      background: var(--canvas);
     }
 
     .topbar {
-      border-bottom: 1px solid #e7e7e4;
-      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid #2a2a2a;
+      background: rgba(24, 24, 24, 0.92);
       backdrop-filter: blur(14px);
     }
 
@@ -118,19 +114,19 @@ st.markdown("""
       display: flex;
       flex-direction: column;
       padding-left: 24px;
-      border-left: 1px solid var(--line);
+      border-left: 1px solid #333;
     }
 
     .tool-name span {
       font-size: 0.72rem;
       letter-spacing: 0.09em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: #999;
     }
 
     .tool-name strong {
       font-size: 0.96rem;
-      color: var(--ink);
+      color: #fff;
     }
 
     .hero {
@@ -143,7 +139,7 @@ st.markdown("""
 
     .eyebrow {
       margin: 0 0 10px;
-      color: #7e6500;
+      color: var(--yellow);
       font-size: 0.76rem;
       font-weight: 800;
       letter-spacing: 0.12em;
@@ -156,6 +152,7 @@ st.markdown("""
       font-size: clamp(1.8rem, 3.8vw, 2.8rem);
       line-height: 1.15;
       letter-spacing: -0.03em;
+      color: #ffffff;
     }
 
     .hero-copy {
@@ -163,7 +160,7 @@ st.markdown("""
       margin: 12px 0 0;
       font-size: 0.96rem;
       line-height: 1.5;
-      color: var(--muted);
+      color: #cccccc;
     }
 
     .origin-card {
@@ -172,9 +169,9 @@ st.markdown("""
       align-items: center;
       gap: 14px;
       padding: 16px 18px;
-      border: 1px solid #e0dfd7;
+      border: 1px solid #333;
       border-radius: 16px;
-      background: rgba(255, 255, 255, 0.72);
+      background: #1a1a1a;
     }
 
     .origin-icon {
@@ -182,10 +179,10 @@ st.markdown("""
       place-items: center;
       width: 42px;
       height: 42px;
-      border: 1px solid #ead27b;
+      border: 1px solid #554400;
       border-radius: 50%;
       color: var(--yellow);
-      background: var(--yellow-soft);
+      background: #2a2500;
       font-size: 0.8rem;
     }
 
@@ -200,15 +197,16 @@ st.markdown("""
       font-size: 0.68rem;
       text-transform: uppercase;
       letter-spacing: 0.07em;
-      color: var(--muted);
+      color: #999;
     }
 
     .origin-card strong {
       font-size: 0.85rem;
+      color: #ffffff;
     }
 
     .origin-card div span {
-      color: #7c7c7c;
+      color: #b0b0b0;
       font-size: 0.75rem;
     }
 
@@ -216,11 +214,11 @@ st.markdown("""
       display: grid;
       grid-template-columns: minmax(0, 1.05fr) minmax(370px, 0.75fr);
       align-items: stretch;
-      border: 1px solid #dadad7;
+      border: 1px solid #333333;
       border-radius: 22px;
       overflow: hidden;
-      background: var(--surface);
-      box-shadow: 0 24px 70px rgba(32, 32, 26, 0.08);
+      background: #181818;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
       margin-bottom: 40px;
     }
 
@@ -233,14 +231,12 @@ st.markdown("""
       min-height: 620px;
       display: flex;
       flex-direction: column;
-      border-left: 1px solid var(--line);
-      background:
-        linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)),
-        repeating-linear-gradient(45deg, #eee 0 1px, transparent 1px 12px);
+      border-left: 1px solid #333;
+      background: #151515;
     }
 
     .result-card.has-result {
-      background: #171717;
+      background: #111111;
       color: white;
     }
 
@@ -257,7 +253,7 @@ st.markdown("""
       min-width: 32px;
       padding-top: 4px;
       border-top: 3px solid var(--yellow);
-      color: #787878;
+      color: #aaaaaa;
       font-size: 0.7rem;
       font-weight: 800;
       letter-spacing: 0.08em;
@@ -269,12 +265,13 @@ st.markdown("""
       margin: 0;
       font-size: 1.2rem;
       letter-spacing: -0.02em;
+      color: #ffffff;
     }
 
     .card-heading p {
       margin: 4px 0 0;
       font-size: 0.84rem;
-      color: var(--muted);
+      color: #b0b0b0;
     }
 
     .empty-result {
@@ -290,7 +287,7 @@ st.markdown("""
     .empty-result h2 {
       max-width: 300px;
       margin: 0 auto;
-      color: #111;
+      color: #ffffff;
     }
 
     .empty-result p {
@@ -298,7 +295,7 @@ st.markdown("""
       margin: 10px auto 24px;
       font-size: 0.84rem;
       line-height: 1.5;
-      color: var(--muted);
+      color: #b0b0b0;
     }
 
     .route-visual {
@@ -326,10 +323,9 @@ st.markdown("""
       z-index: 1;
       width: 12px;
       height: 12px;
-      border: 3px solid white;
+      border: 3px solid #181818;
       border-radius: 50%;
-      background: #1c1c1c;
-      box-shadow: 0 0 0 2px #1c1c1c;
+      background: var(--yellow);
     }
 
     .route-point.start {
@@ -344,9 +340,9 @@ st.markdown("""
       display: grid;
       place-items: center;
       border: 0;
-      color: #171717;
+      color: #111;
       background: var(--yellow);
-      box-shadow: 0 8px 22px rgba(116, 91, 0, 0.2);
+      box-shadow: 0 8px 22px rgba(253, 202, 23, 0.2);
     }
 
     .quote-result {
@@ -361,11 +357,11 @@ st.markdown("""
       justify-content: space-between;
       gap: 16px;
       padding-bottom: 20px;
-      border-bottom: 1px solid #343434;
+      border-bottom: 1px solid #333;
     }
 
     .quote-topline small {
-      color: #a5a5a5;
+      color: #aaaaaa;
       font-size: 0.65rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -389,7 +385,7 @@ st.markdown("""
 
     .type-badge.especial {
       color: white;
-      background: #9b3d31;
+      background: #a13c2f;
     }
 
     .destination-box {
@@ -398,9 +394,9 @@ st.markdown("""
       align-items: flex-start;
       margin: 20px 0;
       padding: 14px;
-      border: 1px solid #383838;
+      border: 1px solid #333;
       border-radius: 10px;
-      background: #222;
+      background: #1a1a1a;
     }
 
     .destination-box > span {
@@ -415,7 +411,7 @@ st.markdown("""
     }
 
     .destination-box small {
-      color: #999;
+      color: #aaaaaa;
       font-size: 0.64rem;
       text-transform: uppercase;
       letter-spacing: 0.07em;
@@ -437,12 +433,12 @@ st.markdown("""
 
     .metric-row div {
       padding: 10px 0;
-      border-bottom: 1px solid #3d3d3d;
+      border-bottom: 1px solid #333;
     }
 
     .metric-row small {
       display: block;
-      color: #999;
+      color: #aaaaaa;
       font-size: 0.65rem;
     }
 
@@ -464,7 +460,7 @@ st.markdown("""
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      color: #c1c1c1;
+      color: #cccccc;
       font-size: 0.75rem;
     }
 
@@ -498,6 +494,7 @@ st.markdown("""
       font-size: clamp(1.8rem, 4.5vw, 2.6rem);
       line-height: 1;
       letter-spacing: -0.04em;
+      color: #111 !important;
     }
 
     .total-box span {
@@ -509,8 +506,18 @@ st.markdown("""
       display: flex;
       justify-content: space-between;
       padding: 20px 0 32px;
-      color: #777;
+      color: #888;
       font-size: 0.7rem;
+    }
+
+    /* Ajustes para inputs do Streamlit no modo escuro */
+    input, select, textarea {
+      color: #ffffff !important;
+    }
+    
+    [data-baseweb="input"] {
+      background-color: #222222 !important;
+      border-color: #383838 !important;
     }
 
     header { visibility: hidden !important; display: none !important; }
@@ -523,10 +530,10 @@ st.markdown("""
 
 # Renderização segura da logo com fallback em texto limpo
 if logo_b64:
-    mime = "jpeg" if logo_ext.lower() == "jpg" else logo_ext.lower()
+    mime = "jpeg" if logo_ext.lower() == "jpg" else icon_ext.lower()
     logo_html = f'<img src="data:image/{mime};base64,{logo_b64}" class="brand-logo" alt="Vasto Logo">'
 else:
-    logo_html = '<strong style="font-size:1.05rem; letter-spacing:0.04em; color:#111;">VASTO ACABAMENTOS</strong>'
+    logo_html = '<strong style="font-size:1.05rem; letter-spacing:0.04em; color:#fff;">VASTO ACABAMENTOS</strong>'
 
 # --- TOPBAR ---
 st.markdown(f"""
