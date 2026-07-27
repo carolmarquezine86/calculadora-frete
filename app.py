@@ -189,7 +189,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 st.markdown("<h2 style='font-size: 22px; font-weight: 900; margin-bottom: 2px; color: #111;'>Calculadora de Frete</h2>", unsafe_allow_html=True)
-st.markdown("<p style='font-size: 13px; color: #6B7280; margin-bottom: 20px;'>Informe o CEP e o número para calcular a rota automaticamente.</p>", unsafe_allow_html=True)
+st.markdown("<p style='font-size: 13px; color: #6B7280; margin-bottom: 20px;'>Informe o CEP e o peso para calcular o frete instantaneamente.</p>", unsafe_allow_html=True)
 
 # --- CARD SAÍDA DO CD ---
 st.markdown("""
@@ -226,7 +226,6 @@ def calcular_frete(peso_kg, tipo_frete, distancia_km):
         "total": total
     }
 
-# --- ESTIMATIVA INTELIGENTE POR REGIÃO/CEP (Elimina erros de API externa) ---
 def estimar_distancia_por_cep(cep_destino):
     try:
         cep_limpo = ''.join(filter(str.isdigit, cep_destino))
@@ -235,27 +234,25 @@ def estimar_distancia_por_cep(cep_destino):
         
         prefixo = int(cep_limpo[:5])
         
-        # Base de referência a partir do Jardim Marcelo / Zona Sul de SP (Ex: 04865-012)
-        # Região Sul próxima (Capela do Socorro, Interlagos, Grajaú)
+        # Base de referência a partir do Jardim Marcelo (Zona Sul de SP)
         if 48000 <= prefixo <= 48499:
-            return 10.0, "Região Sul Próxima (São Paulo/SP)"
+            return 12.0, "Região Sul Próxima (São Paulo/SP)"
         elif 48500 <= prefixo <= 48999:
-            return 12.0, "Jardim Marcelo / Grajaú (São Paulo/SP)"
-        # Demais regiões de São Paulo Capital baseadas nos prefixos dos Correios
+            return 10.0, "Jardim Marcelo / Grajaú (São Paulo/SP)"
         elif 4000 <= prefixo <= 5999:
-            return 25.0, "Zona Sul / Centro / Zona Oeste (São Paulo/SP)"
+            return 22.0, "Zona Sul / Centro / Zona Oeste (São Paulo/SP)"
         elif 6000 <= prefixo <= 8499:
-            return 32.0, "Zona Leste / Zona Norte (São Paulo/SP)"
+            return 28.0, "Zona Leste / Zona Norte (São Paulo/SP)"
         elif 9000 <= prefixo <= 9999:
-            return 35.0, "Grande São Paulo / ABC Paulista"
+            return 30.0, "Grande São Paulo / ABC Paulista"
         elif 10000 <= prefixo <= 19999:
-            return 90.0, "Interior de São Paulo"
+            return 85.0, "Interior de São Paulo"
         else:
-            return 40.0, "São Paulo e Região Metropolitana"
+            return 35.0, "São Paulo e Região Metropolitana"
     except Exception:
         return 20.0, "São Paulo/SP"
 
-# --- FORMULÁRIO COM CHAVES PARA CONTROLE DO ESTADO ---
+# --- FORMULÁRIO COM CONTROLE DE ESTADO ---
 col_cep, col_num = st.columns([2, 1])
 with col_cep:
     cep = st.text_input("CEP de Destino", placeholder="Ex: 04312-040", key="input_cep")
@@ -284,8 +281,7 @@ if btn_calcular:
     if not cep:
         st.error("Por favor, informe o CEP de destino.")
     else:
-        with st.spinner("Calculando rota e frete..."):
-            dist, regiao = estimar_distancia_por_cep(cep)
+        dist, regiao = estimar_distancia_por_cep(cep)
             
         if dist is not None:
             res = calcular_frete(peso, tipo_frete_escolhido, dist)
